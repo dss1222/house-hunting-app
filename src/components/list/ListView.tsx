@@ -8,9 +8,13 @@ export function ListView() {
 
   if (loading) {
     return (
-      <div className="p-4 space-y-3">
+      <div className="px-5 pt-4 space-y-4">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="h-[120px] rounded-2xl skeleton" />
+          <div key={i} className="space-y-2">
+            <div className="h-5 w-32 skeleton" />
+            <div className="h-4 w-48 skeleton" />
+            <div className="h-6 w-36 skeleton" />
+          </div>
         ))}
       </div>
     )
@@ -18,18 +22,13 @@ export function ListView() {
 
   if (properties.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center p-8 text-center min-h-[60vh] animate-fade-in">
-        <div className="w-20 h-20 rounded-3xl bg-primary-light flex items-center justify-center mb-5">
-          <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
-            <path d="M3 10.5L12 3l9 7.5V21a1 1 0 01-1 1H4a1 1 0 01-1-1V10.5z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-primary"/>
-            <path d="M9 22V12h6v10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-primary"/>
-          </svg>
-        </div>
-        <p className="text-lg font-bold text-text mb-1">아직 등록된 매물이 없어요</p>
-        <p className="text-sm text-text-secondary mb-8">첫 매물을 등록해 보세요!</p>
+      <div className="flex flex-col items-center justify-center px-5 text-center min-h-[60vh] animate-fade-in">
+        <p className="text-[40px] mb-4">🏠</p>
+        <p className="text-[18px] font-bold text-text mb-2">아직 등록된 매물이 없어요</p>
+        <p className="text-[14px] text-text-secondary mb-8">첫 매물을 등록해 보세요!</p>
         <button
           onClick={() => navigate('/property/new')}
-          className="px-8 py-3.5 bg-gradient-to-r from-[#4f6cff] to-[#7c5cfc] text-white rounded-2xl font-semibold min-h-[48px] shadow-[0_4px_16px_rgba(79,108,255,0.3)] active:scale-[0.98] transition-transform"
+          className="w-full max-w-[280px] py-3.5 bg-primary text-white rounded-2xl font-semibold text-[15px] min-h-[50px] active:bg-primary-dark transition-colors"
         >
           매물 등록하기
         </button>
@@ -38,18 +37,23 @@ export function ListView() {
   }
 
   return (
-    <div className="p-4 space-y-3">
-      <div className="flex items-center justify-between mb-1">
-        <p className="text-xs text-text-tertiary font-medium">{properties.length}개 매물</p>
+    <div className="animate-fade-in">
+      {/* Section header */}
+      <div className="px-5 pt-4 pb-2">
+        <p className="text-[13px] text-text-secondary">{properties.length}개의 매물</p>
       </div>
-      {properties.map((property, index) => (
-        <div key={property.id} className="animate-fade-in" style={{ animationDelay: `${index * 0.04}s` }}>
-          <PropertyCard property={property} />
-        </div>
-      ))}
+
+      {/* Property list */}
+      <div className="divide-y divide-[#f2f4f6]">
+        {properties.map((property) => (
+          <PropertyCard key={property.id} property={property} />
+        ))}
+      </div>
+
+      {/* FAB */}
       <button
         onClick={() => navigate('/property/new')}
-        className="fixed right-4 bottom-[80px] w-14 h-14 bg-gradient-to-br from-[#4f6cff] to-[#9f7afa] text-white rounded-2xl shadow-[var(--shadow-float)] text-2xl flex items-center justify-center z-30 active:scale-95 transition-transform"
+        className="fixed right-5 bottom-[88px] w-14 h-14 bg-primary text-white rounded-full shadow-[0_4px_12px_rgba(49,130,246,0.4)] flex items-center justify-center z-30 active:bg-primary-dark transition-colors"
         aria-label="매물 추가"
       >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>

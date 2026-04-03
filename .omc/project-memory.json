@@ -155,80 +155,80 @@
   "hotPaths": [
     {
       "path": "src\\components\\property\\PropertyDetail.tsx",
-      "accessCount": 4,
-      "lastAccessed": 1775225392640,
+      "accessCount": 6,
+      "lastAccessed": 1775225915071,
       "type": "file"
     },
     {
       "path": "src\\styles\\globals.css",
-      "accessCount": 3,
-      "lastAccessed": 1775225047117,
+      "accessCount": 5,
+      "lastAccessed": 1775225831698,
       "type": "file"
     },
     {
       "path": "src\\components\\auth\\LoginPage.tsx",
-      "accessCount": 3,
-      "lastAccessed": 1775225094889,
+      "accessCount": 5,
+      "lastAccessed": 1775225852710,
       "type": "file"
     },
     {
       "path": "src\\components\\layout\\MobileLayout.tsx",
-      "accessCount": 3,
-      "lastAccessed": 1775225116974,
+      "accessCount": 5,
+      "lastAccessed": 1775225857077,
       "type": "file"
     },
     {
       "path": "src\\components\\layout\\BottomTabBar.tsx",
-      "accessCount": 3,
-      "lastAccessed": 1775225130499,
+      "accessCount": 5,
+      "lastAccessed": 1775225868411,
       "type": "file"
     },
     {
       "path": "src\\components\\property\\PropertyCard.tsx",
-      "accessCount": 3,
-      "lastAccessed": 1775225160630,
+      "accessCount": 5,
+      "lastAccessed": 1775225882806,
       "type": "file"
     },
     {
       "path": "src\\components\\list\\ListView.tsx",
-      "accessCount": 3,
-      "lastAccessed": 1775225179167,
+      "accessCount": 5,
+      "lastAccessed": 1775225892211,
       "type": "file"
     },
     {
       "path": "src\\components\\compare\\CompareView.tsx",
-      "accessCount": 3,
-      "lastAccessed": 1775225282448,
-      "type": "file"
-    },
-    {
-      "path": "src\\components\\map\\MapView.tsx",
-      "accessCount": 3,
-      "lastAccessed": 1775225294531,
+      "accessCount": 4,
+      "lastAccessed": 1775225803898,
       "type": "file"
     },
     {
       "path": "src\\components\\property\\RatingStars.tsx",
-      "accessCount": 3,
-      "lastAccessed": 1775225309651,
+      "accessCount": 4,
+      "lastAccessed": 1775225804936,
       "type": "file"
     },
     {
       "path": "src\\components\\property\\TagSelector.tsx",
-      "accessCount": 3,
-      "lastAccessed": 1775225317678,
+      "accessCount": 4,
+      "lastAccessed": 1775225805217,
       "type": "file"
     },
     {
       "path": "src\\components\\property\\PhotoUploader.tsx",
-      "accessCount": 3,
-      "lastAccessed": 1775225335773,
+      "accessCount": 4,
+      "lastAccessed": 1775225805811,
       "type": "file"
     },
     {
       "path": "src\\components\\property\\ReviewSection.tsx",
-      "accessCount": 3,
-      "lastAccessed": 1775225356284,
+      "accessCount": 4,
+      "lastAccessed": 1775225806260,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\map\\MapView.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1775225806546,
       "type": "file"
     },
     {

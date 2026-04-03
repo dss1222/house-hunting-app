@@ -45,27 +45,47 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: '매물 ID를 찾을 수 없습니다. 네이버 부동산 매물 상세 페이지의 공유 링크를 사용해주세요.' })
     }
 
-    // 2. 네이버 부동산 API 호출
-    const apiUrl = `https://fin.land.naver.com/front-api/v1/article/basicInfo?articleId=${articleId}`
-    const apiRes = await fetch(apiUrl, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15',
-        'Referer': `https://fin.land.naver.com/articles/${articleId}`,
-        'Accept': 'application/json',
+    // 2. 여러 API 엔드포인트 시도
+    const endpoints = [
+      {
+        url: `https://fin.land.naver.com/front-api/v1/article/basicInfo?articleId=${articleId}`,
+        referer: `https://fin.land.naver.com/articles/${articleId}`,
       },
-      signal: AbortSignal.timeout(8000),
-    })
+      {
+        url: `https://new.land.naver.com/api/articles/${articleId}`,
+        referer: `https://new.land.naver.com/`,
+      },
+    ]
 
-    if (!apiRes.ok) {
-      return res.status(502).json({ error: `네이버 API 오류 (${apiRes.status}). 잠시 후 다시 시도해주세요.` })
+    let info: Record<string, unknown> | null = null
+
+    for (const ep of endpoints) {
+      try {
+        const apiRes = await fetch(ep.url, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15',
+            'Referer': ep.referer,
+            'Accept': 'application/json',
+          },
+          signal: AbortSignal.timeout(6000),
+        })
+
+        if (!apiRes.ok) continue
+        const data = await apiRes.json()
+        if (data?.detailCode === 'TOO_MANY_REQUESTS' || data?.code === 'TOO_MANY_REQUESTS') continue
+        if (data?.success === false) continue
+
+        info = data?.result ?? data
+        if (info && (info.articleName || info.complexName || info.articleTitle)) break
+        info = null
+      } catch {
+        continue
+      }
     }
 
-    const data = await apiRes.json()
-    if (data?.detailCode === 'TOO_MANY_REQUESTS') {
-      return res.status(429).json({ error: '네이버 요청 제한. 30초 후 다시 시도해주세요.' })
+    if (!info) {
+      return res.status(429).json({ error: '네이버 요청 제한. 30초~1분 후 다시 시도해주세요.' })
     }
-
-    const info = data?.result ?? data
 
     const property = {
       name: info.articleName ?? info.complexName ?? info.articleTitle ?? '',
