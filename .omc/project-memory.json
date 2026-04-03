@@ -155,8 +155,8 @@
   "hotPaths": [
     {
       "path": "src\\components\\property\\PropertyDetail.tsx",
-      "accessCount": 10,
-      "lastAccessed": 1775226885087,
+      "accessCount": 15,
+      "lastAccessed": 1775227316746,
       "type": "file"
     },
     {
@@ -232,6 +232,12 @@
       "type": "file"
     },
     {
+      "path": "src\\lib\\constants.ts",
+      "accessCount": 6,
+      "lastAccessed": 1775227284921,
+      "type": "file"
+    },
+    {
       "path": "src\\App.tsx",
       "accessCount": 4,
       "lastAccessed": 1775226210881,
@@ -241,12 +247,6 @@
       "path": "src\\components\\layout\\ErrorBoundary.tsx",
       "accessCount": 4,
       "lastAccessed": 1775226378212,
-      "type": "file"
-    },
-    {
-      "path": "src\\lib\\constants.ts",
-      "accessCount": 4,
-      "lastAccessed": 1775226891295,
       "type": "file"
     },
     {
@@ -373,6 +373,12 @@
       "path": "src",
       "accessCount": 1,
       "lastAccessed": 1775226886710,
+      "type": "directory"
+    },
+    {
+      "path": "src\\types",
+      "accessCount": 1,
+      "lastAccessed": 1775227149608,
       "type": "directory"
     }
   ],

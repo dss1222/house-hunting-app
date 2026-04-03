@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { useProperties } from '../../hooks/useProperties'
-import { useNaverImport } from '../../hooks/useNaverImport'
 import { PRICE_TYPES, DIRECTIONS, EMPTY_PROPERTY_FORM } from '../../lib/constants'
 import { RatingStars } from './RatingStars'
 import { TagSelector } from './TagSelector'
@@ -14,7 +13,6 @@ export function PropertyForm() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const { createProperty, updateProperty } = useProperties()
-  const { parseInput, importing, error: importError } = useNaverImport()
   const [form, setForm] = useState(EMPTY_PROPERTY_FORM)
   const [saving, setSaving] = useState(false)
   const [showDetail, setShowDetail] = useState(false)
@@ -96,53 +94,30 @@ export function PropertyForm() {
         </button>
       </div>
 
-      {/* 네이버 부동산 붙여넣기 */}
+      {/* 네이버 링크 저장 */}
       {!isEdit && showImport && (
         <section className="bg-primary-light rounded-xl p-4 space-y-2">
-          <h3 className="text-sm font-semibold text-primary">네이버 부동산 자동 입력</h3>
-          <p className="text-xs text-text-secondary leading-relaxed">
-            네이버 부동산 매물 페이지에서 정보를 복사해서 붙여넣으세요.<br/>
-            가격, 평수, 층수 등을 자동으로 인식합니다.
-          </p>
-          <textarea
-            placeholder={"예시:\n래미안 ○○아파트\n서울시 강남구 ○○동\n전세 3억 5,000만원\n전용 84㎡ · 10층 · 방3 · 욕실2 · 남향"}
-            value={pasteText}
-            onChange={(e) => setPasteText(e.target.value)}
-            rows={4}
-            className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-white resize-none"
-          />
-          <button
-            type="button"
-            disabled={importing || !pasteText.trim()}
-            onClick={() => {
-              const data = parseInput(pasteText.trim())
-              if (data) {
-                setForm((prev) => ({
-                  ...prev,
-                  name: data.name ?? prev.name,
-                  address: data.address ?? prev.address,
-                  price_type: data.price_type ?? prev.price_type,
-                  price: data.price ?? prev.price,
-                  monthly_rent: data.monthly_rent ?? prev.monthly_rent,
-                  deposit: data.deposit ?? prev.deposit,
-                  size_pyeong: data.size_pyeong ?? prev.size_pyeong,
-                  floor: data.floor ?? prev.floor,
-                  rooms: data.rooms ?? prev.rooms,
-                  bathrooms: data.bathrooms ?? prev.bathrooms,
-                  parking: data.parking ?? prev.parking,
-                  maintenance_fee: data.maintenance_fee ?? prev.maintenance_fee,
-                  direction: data.direction ?? prev.direction,
-                  memo: data.memo ?? prev.memo,
-                }))
+          <h3 className="text-sm font-semibold text-primary">네이버 부동산 링크 저장</h3>
+          <p className="text-xs text-text-secondary">공유 링크를 붙여넣으면 메모에 저장됩니다</p>
+          <div className="flex gap-2">
+            <input
+              placeholder="네이버 부동산 링크 붙여넣기"
+              value={pasteText}
+              onChange={(e) => setPasteText(e.target.value)}
+              className="flex-1 px-3 py-2 border border-border rounded-lg text-sm min-h-[44px] bg-white"
+            />
+            <button
+              type="button"
+              disabled={!pasteText.trim()}
+              onClick={() => {
+                set('memo', pasteText.trim())
                 setShowImport(false)
-                setShowDetail(true)
-              }
-            }}
-            className="w-full py-2.5 bg-primary text-white rounded-lg text-sm font-medium min-h-[44px] disabled:opacity-50"
-          >
-            자동 입력하기
-          </button>
-          {importError && <p className="text-danger text-xs mt-1">{importError}</p>}
+              }}
+              className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium min-h-[44px] disabled:opacity-50 whitespace-nowrap"
+            >
+              저장
+            </button>
+          </div>
         </section>
       )}
 

@@ -9,6 +9,11 @@ export const TAG_OPTIONS = [
   '리모델링', '풀옵션', '반려동물가능',
 ] as const
 
+export const COMMUTE_DESTINATIONS = [
+  { name: '여의도', address: '여의도동 10', lat: 37.5219, lng: 126.9245 },
+  { name: '논현', address: '서울 강남구 논현로72길 13', lat: 37.5110, lng: 127.0295 },
+] as const
+
 export const EMPTY_PROPERTY_FORM = {
   name: '',
   address: '',

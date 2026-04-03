@@ -7,6 +7,7 @@ import { RatingStars } from './RatingStars'
 import { PhotoUploader } from './PhotoUploader'
 import { ReviewSection } from './ReviewSection'
 import type { Property } from '../../types'
+import { COMMUTE_DESTINATIONS } from '../../lib/constants'
 
 export function PropertyDetail() {
   const { id } = useParams<{ id: string }>()
@@ -55,6 +56,20 @@ export function PropertyDetail() {
     )
   }
 
+  const openDirections = (dest: typeof COMMUTE_DESTINATIONS[number]) => {
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+    const webUrl = `https://map.kakao.com/link/to/${encodeURIComponent(dest.name)},${dest.lat},${dest.lng}`
+
+    if (isMobile && property.latitude && property.longitude) {
+      window.location.href = `kakaomap://route?sp=${property.latitude},${property.longitude}&ep=${dest.lat},${dest.lng}&by=PUBLICTRANSIT`
+      setTimeout(() => {
+        window.open(webUrl, '_blank', 'noopener,noreferrer')
+      }, 1500)
+    } else {
+      window.open(webUrl, '_blank', 'noopener,noreferrer')
+    }
+  }
+
   const priceDisplay = () => {
     if (property.price_type === '월세') return `${property.deposit ?? 0}/${property.monthly_rent ?? 0}`
     if (property.price_type === '전세') return `${property.deposit ?? property.price ?? 0}`
@@ -89,7 +104,21 @@ export function PropertyDetail() {
       {/* Hero section - name, address, price */}
       <div className="px-5 pt-2 pb-7">
         <h2 className="text-[24px] font-bold text-text leading-tight mb-1">{property.name}</h2>
-        <p className="text-[14px] text-text-secondary mb-6">{property.address}</p>
+        <p className={`text-[14px] text-text-secondary ${property.latitude && property.longitude ? '' : 'mb-6'}`}>{property.address}</p>
+
+        {property.latitude && property.longitude && (
+          <div className="flex gap-2 mt-3 mb-6">
+            {COMMUTE_DESTINATIONS.map((dest) => (
+              <button
+                key={dest.name}
+                onClick={() => openDirections(dest)}
+                className="text-[13px] text-[#3182f6] bg-[#e8f3ff] px-3 py-1.5 rounded-lg font-medium active:opacity-50 transition-opacity"
+              >
+                🚌 {dest.name} 길찾기
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Price - hero sized */}
         <div className="mb-1">
