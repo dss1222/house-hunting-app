@@ -5,132 +5,137 @@ export function useNaverImport() {
   const [importing, setImporting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const parseText = (text: string): Partial<PropertyFormData> | null => {
+  const importFromUrl = async (inputUrl: string): Promise<Partial<PropertyFormData> | null> => {
     setImporting(true)
     setError(null)
 
     try {
-      const result: Partial<PropertyFormData> = {}
-
-      // 가격 파싱
-      const pricePatterns = [
-        { regex: /매매\s*[:\s]*([0-9,.]+)\s*만?\s*원?/i, type: '매매' as const, field: 'price' },
-        { regex: /매매가\s*[:\s]*([0-9,.]+)\s*억?\s*([0-9,]*)\s*만?\s*원?/, type: '매매' as const, field: 'price' },
-        { regex: /전세\s*[:\s]*([0-9,.]+)\s*만?\s*원?/i, type: '전세' as const, field: 'deposit' },
-        { regex: /전세금?\s*[:\s]*([0-9,.]+)\s*억?\s*([0-9,]*)\s*만?\s*원?/, type: '전세' as const, field: 'deposit' },
-        { regex: /월세\s*[:\s]*([0-9,.]+)\s*\/\s*([0-9,.]+)/i, type: '월세' as const },
-        { regex: /보증금\s*[:\s]*([0-9,.]+).*?월세\s*[:\s]*([0-9,.]+)/i, type: '월세' as const },
-      ]
-
-      for (const pattern of pricePatterns) {
-        const match = text.match(pattern.regex)
-        if (match) {
-          result.price_type = pattern.type
-          if (pattern.type === '월세') {
-            result.deposit = parsePrice(match[1]!)
-            result.monthly_rent = parsePrice(match[2]!)
-          } else if (pattern.type === '전세') {
-            result.deposit = parsePrice(match[1]!, match[2])
-          } else {
-            result.price = parsePrice(match[1]!, match[2])
-          }
-          break
-        }
+      // 1. naver.me 단축 URL → 실제 URL로 변환
+      let articleId = ''
+      const articleMatch = inputUrl.match(/articles\/(\d+)/)
+      if (articleMatch) {
+        articleId = articleMatch[1]!
+      } else if (inputUrl.includes('naver.me')) {
+        // CORS 프록시로 리다이렉트 URL 확인
+        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(inputUrl)}`
+        const res = await fetchWithTimeout(proxyUrl, 10000)
+        const html = await res.text()
+        const idMatch = html.match(/articles\/(\d+)/)
+        if (idMatch) articleId = idMatch[1]!
       }
 
-      // 억 단위 파싱
-      const eokMatch = text.match(/([0-9]+)\s*억\s*([0-9,]*)\s*만?\s*원?/)
-      if (eokMatch && !result.price && !result.deposit) {
-        const eok = parseInt(eokMatch[1]!) * 10000
-        const man = eokMatch[2] ? parseInt(eokMatch[2].replace(/,/g, '')) : 0
-        const total = eok + man
-        if (text.includes('전세')) {
-          result.price_type = '전세'
-          result.deposit = total
-        } else {
-          result.price_type = '매매'
-          result.price = total
-        }
-      }
-
-      // 면적/평수
-      const areaMatch = text.match(/전용\s*면적?\s*[:\s]*([0-9.]+)\s*㎡/) ??
-                        text.match(/전용\s*([0-9.]+)\s*㎡/) ??
-                        text.match(/([0-9.]+)\s*㎡/)
-      if (areaMatch) {
-        result.size_pyeong = Math.round(parseFloat(areaMatch[1]!) * 0.3025 * 10) / 10
-      }
-      const pyeongMatch = text.match(/([0-9.]+)\s*평/)
-      if (pyeongMatch && !result.size_pyeong) {
-        result.size_pyeong = parseFloat(pyeongMatch[1]!)
-      }
-
-      // 층수
-      const floorMatch = text.match(/([0-9]+)\s*층\s*[/\/]\s*[0-9]+\s*층/) ??
-                         text.match(/([0-9]+)\s*층/)
-      if (floorMatch) {
-        result.floor = parseInt(floorMatch[1]!)
-      }
-
-      // 방/화장실
-      const roomMatch = text.match(/방\s*([0-9]+)/) ?? text.match(/([0-9]+)\s*개?\s*룸/)
-      if (roomMatch) result.rooms = parseInt(roomMatch[1]!)
-
-      const bathMatch = text.match(/욕실\s*([0-9]+)/) ?? text.match(/화장실\s*([0-9]+)/)
-      if (bathMatch) result.bathrooms = parseInt(bathMatch[1]!)
-
-      // 관리비
-      const maintMatch = text.match(/관리비\s*[:\s]*([0-9,.]+)\s*만?\s*원?/)
-      if (maintMatch) result.maintenance_fee = parseInt(maintMatch[1]!.replace(/,/g, ''))
-
-      // 방향
-      const dirMatch = text.match(/(남향|동향|서향|북향|남동향|남서향|북동향|북서향)/)
-      if (dirMatch) result.direction = dirMatch[1]!
-
-      // 주차
-      if (/주차\s*(가능|있|O|○)/i.test(text)) result.parking = true
-      if (/주차\s*(불가|없|X|×)/i.test(text)) result.parking = false
-
-      // 주소 (도/시로 시작하는 줄)
-      const addrMatch = text.match(/(서울|경기|인천|부산|대구|대전|광주|울산|세종|강원|충북|충남|전북|전남|경북|경남|제주)[^\n]{5,50}/)
-      if (addrMatch) result.address = addrMatch[0]!.trim()
-
-      // 단지명 (첫 줄이나 굵은 텍스트)
-      const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0)
-      if (lines[0] && lines[0].length <= 30 && !lines[0].match(/^[0-9]/)) {
-        result.name = lines[0]
-      }
-
-      // 링크 저장
-      const linkMatch = text.match(/(https?:\/\/[^\s]+naver[^\s]+)/)
-      if (linkMatch) {
-        result.memo = `네이버 부동산: ${linkMatch[1]}`
-      }
-
-      if (Object.keys(result).length <= 1) {
-        setError('매물 정보를 찾을 수 없습니다. 네이버 부동산 페이지의 텍스트를 더 많이 복사해주세요.')
+      if (!articleId) {
+        setError('유효한 네이버 부동산 링크가 아닙니다')
         return null
       }
 
-      return result
-    } catch {
-      setError('파싱 중 오류가 발생했습니다.')
+      // 2. 네이버 부동산 API 호출 (CORS 프록시 경유)
+      const apiUrl = `https://fin.land.naver.com/front-api/v1/article/basicInfo?articleId=${articleId}`
+      const proxyApiUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`
+
+      const apiRes = await fetchWithTimeout(proxyApiUrl, 10000)
+      const data = await apiRes.json()
+
+      const info = data?.result ?? data
+
+      if (!info || info.detailCode === 'TOO_MANY_REQUESTS') {
+        // API 실패시 HTML 페이지에서 파싱 시도
+        const htmlUrl = `https://fin.land.naver.com/articles/${articleId}`
+        const proxyHtmlUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(htmlUrl)}`
+        const htmlRes = await fetchWithTimeout(proxyHtmlUrl, 10000)
+        const htmlData = await htmlRes.json()
+
+        if (htmlData?.contents) {
+          const parsed = parseHtml(htmlData.contents, articleId)
+          if (parsed) return parsed
+        }
+
+        setError('네이버에서 데이터를 가져올 수 없습니다. 잠시 후 다시 시도해주세요.')
+        return null
+      }
+
+      // 3. 우리 앱 형태로 변환
+      return convertToProperty(info, articleId)
+    } catch (e) {
+      console.error('Import error:', e)
+      setError('가져오기 실패. 다시 시도해주세요.')
       return null
     } finally {
       setImporting(false)
     }
   }
 
-  return { parseText, importing, error }
+  return { importFromUrl, importing, error }
 }
 
-function parsePrice(main: string, sub?: string): number {
-  const mainNum = parseInt(main.replace(/,/g, ''))
-  if (main.includes('.') || mainNum <= 100) {
-    // 억 단위로 추정
-    const eok = Math.floor(mainNum) * 10000
-    const remainder = sub ? parseInt(sub.replace(/,/g, '')) : Math.round((parseFloat(main) % 1) * 10000)
-    return eok + remainder
+function fetchWithTimeout(url: string, ms: number): Promise<Response> {
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), ms)
+  return fetch(url, { signal: controller.signal }).finally(() => clearTimeout(timer))
+}
+
+function convertToProperty(info: Record<string, unknown>, articleId: string): Partial<PropertyFormData> {
+  const result: Partial<PropertyFormData> = {}
+
+  result.name = (info.articleName ?? info.complexName ?? info.articleTitle ?? '') as string
+  result.address = (info.exposureAddress ?? info.address ?? info.roadAddress ?? '') as string
+
+  const tradeType = String(info.tradeTypeName ?? info.tradeType ?? '')
+  if (tradeType.includes('매매') || tradeType === 'A1') {
+    result.price_type = '매매'
+    result.price = parseNum(info.dealPrice ?? info.price)
+  } else if (tradeType.includes('월세') || tradeType === 'B2') {
+    result.price_type = '월세'
+    result.deposit = parseNum(info.deposit ?? info.warrantPrice)
+    result.monthly_rent = parseNum(info.monthlyRent)
+  } else {
+    result.price_type = '전세'
+    result.deposit = parseNum(info.deposit ?? info.warrantPrice ?? info.dealPrice ?? info.price)
   }
-  return mainNum
+
+  if (info.exclusiveArea) {
+    result.size_pyeong = Math.round(parseFloat(String(info.exclusiveArea)) * 0.3025 * 10) / 10
+  }
+  if (info.floor || info.floorInfo) result.floor = parseInt(String(info.floor ?? info.floorInfo))
+  if (info.roomCount) result.rooms = parseInt(String(info.roomCount))
+  if (info.bathroomCount) result.bathrooms = parseInt(String(info.bathroomCount))
+  if (info.parkingCount) result.parking = parseInt(String(info.parkingCount)) > 0
+  if (info.maintenanceFee) result.maintenance_fee = Math.round(parseFloat(String(info.maintenanceFee)))
+  if (info.direction) result.direction = String(info.direction)
+  if (info.latitude) result.latitude = parseFloat(String(info.latitude))
+  if (info.longitude) result.longitude = parseFloat(String(info.longitude))
+
+  result.tags = []
+  const year = info.approvalDate ?? info.useApprovalDate
+  if (typeof year === 'string') {
+    const builtYear = parseInt(year.substring(0, 4))
+    if (!isNaN(builtYear)) {
+      result.tags.push(new Date().getFullYear() - builtYear <= 5 ? '신축' : '구축')
+    }
+  }
+
+  result.memo = `네이버 부동산: https://fin.land.naver.com/articles/${articleId}`
+
+  return result
+}
+
+function parseHtml(html: string, articleId: string): Partial<PropertyFormData> | null {
+  try {
+    const nextDataMatch = html.match(/<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/)
+    if (nextDataMatch?.[1]) {
+      const nextData = JSON.parse(nextDataMatch[1])
+      const props = nextData?.props?.pageProps
+      if (props?.articleDetail || props?.basicInfo) {
+        return convertToProperty(props.articleDetail ?? props.basicInfo, articleId)
+      }
+    }
+  } catch { /* ignore */ }
+  return null
+}
+
+function parseNum(value: unknown): number | null {
+  if (value === null || value === undefined || value === '') return null
+  const str = String(value).replace(/[^0-9]/g, '')
+  const num = parseInt(str)
+  return isNaN(num) ? null : num
 }
