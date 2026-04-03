@@ -155,8 +155,20 @@
   "hotPaths": [
     {
       "path": "src\\components\\property\\PropertyDetail.tsx",
-      "accessCount": 18,
-      "lastAccessed": 1775229140250,
+      "accessCount": 19,
+      "lastAccessed": 1775256572157,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\property\\PropertyCard.tsx",
+      "accessCount": 10,
+      "lastAccessed": 1775256587099,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\compare\\CompareView.tsx",
+      "accessCount": 10,
+      "lastAccessed": 1775256588405,
       "type": "file"
     },
     {
@@ -178,21 +190,9 @@
       "type": "file"
     },
     {
-      "path": "src\\components\\property\\PropertyCard.tsx",
-      "accessCount": 8,
-      "lastAccessed": 1775229095101,
-      "type": "file"
-    },
-    {
       "path": "src\\components\\list\\ListView.tsx",
       "accessCount": 8,
       "lastAccessed": 1775229105052,
-      "type": "file"
-    },
-    {
-      "path": "src\\components\\compare\\CompareView.tsx",
-      "accessCount": 8,
-      "lastAccessed": 1775229160365,
       "type": "file"
     },
     {
@@ -380,6 +380,12 @@
       "accessCount": 1,
       "lastAccessed": 1775227149608,
       "type": "directory"
+    },
+    {
+      "path": "CLAUDE.md",
+      "accessCount": 1,
+      "lastAccessed": 1775257835561,
+      "type": "file"
     }
   ],
   "userDirectives": []

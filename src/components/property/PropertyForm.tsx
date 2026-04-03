@@ -158,43 +158,52 @@ export function PropertyForm() {
     }
   }
 
+  const inputCls = 'w-full h-[52px] px-4 bg-[#2c2c35] rounded-2xl text-[15px] text-white placeholder:text-[#4e5968] border-2 border-transparent focus:border-[#3182f6] transition-all'
+  const labelCls = 'text-[13px] font-semibold text-[#8b95a1] block mb-2'
+
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#17171c]">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 h-[56px] border-b border-gray-100 sticky top-0 bg-white z-10">
-        <button type="button" onClick={() => navigate(-1)} className="min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-500">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+      <div className="flex items-center justify-between px-2 h-[56px] border-b border-[#2c2c35] sticky top-0 bg-[#17171c] z-10">
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="w-[44px] h-[44px] flex items-center justify-center active:opacity-50 transition-opacity"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round">
+            <path d="M15 18l-6-6 6-6"/>
+          </svg>
         </button>
-        <h2 className="text-[17px] font-bold text-gray-900">{isEdit ? '매물 수정' : '새 매물 등록'}</h2>
-        <div className="min-w-[44px]" />
+        <h2 className="text-[18px] font-bold text-white">{isEdit ? '매물 수정' : '새 매물 등록'}</h2>
+        <div className="w-[44px]" />
       </div>
 
-      <form onSubmit={handleSubmit} className="px-4 py-5 space-y-5 pb-24">
+      <form onSubmit={handleSubmit} className="px-5 py-5 space-y-6 pb-[100px]">
         {/* 매물명 */}
-        <div className="space-y-1.5">
-          <label className="text-[13px] font-semibold text-gray-500">매물명 *</label>
+        <div>
+          <label className={labelCls}>매물명 *</label>
           <input
             required
             placeholder="예: 논현 래미안 101동 1201호"
             value={form.name}
             onChange={(e) => set('name', e.target.value)}
-            className="w-full px-4 py-3 border border-gray-200 rounded-xl text-[15px] min-h-[48px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            className={inputCls}
           />
         </div>
 
         {/* 가격 유형 + 가격 */}
-        <div className="space-y-1.5">
-          <label className="text-[13px] font-semibold text-gray-500">가격</label>
-          <div className="flex gap-2 mb-2">
+        <div>
+          <label className={labelCls}>가격</label>
+          <div className="flex gap-2 mb-3">
             {PRICE_TYPES.map((t) => (
               <button
                 key={t}
                 type="button"
                 onClick={() => set('price_type', t)}
-                className={`flex-1 py-2.5 rounded-xl text-[14px] font-semibold border transition-colors min-h-[44px] ${
+                className={`flex-1 h-[48px] rounded-2xl text-[14px] font-semibold transition-colors ${
                   form.price_type === t
-                    ? 'bg-blue-500 text-white border-blue-500'
-                    : 'bg-white text-gray-600 border-gray-200'
+                    ? 'bg-[#3182f6] text-white'
+                    : 'bg-[#2c2c35] text-[#8b95a1]'
                 }`}
               >
                 {t}
@@ -207,7 +216,7 @@ export function PropertyForm() {
               placeholder="매매가 (만원)"
               value={form.price ?? ''}
               onChange={(e) => set('price', numOrNull(e.target.value))}
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl text-[15px] min-h-[48px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className={inputCls}
             />
           )}
           {form.price_type === '전세' && (
@@ -216,7 +225,7 @@ export function PropertyForm() {
               placeholder="전세금 (만원)"
               value={form.deposit ?? ''}
               onChange={(e) => set('deposit', numOrNull(e.target.value))}
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl text-[15px] min-h-[48px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className={inputCls}
             />
           )}
           {form.price_type === '월세' && (
@@ -226,14 +235,14 @@ export function PropertyForm() {
                 placeholder="보증금 (만원)"
                 value={form.deposit ?? ''}
                 onChange={(e) => set('deposit', numOrNull(e.target.value))}
-                className="flex-1 px-4 py-3 border border-gray-200 rounded-xl text-[15px] min-h-[48px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                className="flex-1 h-[52px] px-4 bg-[#2c2c35] rounded-2xl text-[15px] text-white placeholder:text-[#4e5968] border-2 border-transparent focus:border-[#3182f6] transition-all"
               />
               <input
                 type="number"
                 placeholder="월세 (만원)"
                 value={form.monthly_rent ?? ''}
                 onChange={(e) => set('monthly_rent', numOrNull(e.target.value))}
-                className="flex-1 px-4 py-3 border border-gray-200 rounded-xl text-[15px] min-h-[48px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                className="flex-1 h-[52px] px-4 bg-[#2c2c35] rounded-2xl text-[15px] text-white placeholder:text-[#4e5968] border-2 border-transparent focus:border-[#3182f6] transition-all"
               />
             </div>
           )}
@@ -241,8 +250,8 @@ export function PropertyForm() {
 
         {/* 전용면적 + 층수 */}
         <div className="flex gap-3">
-          <div className="flex-1 space-y-1.5">
-            <label className="text-[13px] font-semibold text-gray-500">전용면적</label>
+          <div className="flex-1">
+            <label className={labelCls}>전용면적</label>
             <input
               placeholder="예: 84/59"
               value={sizeInput}
@@ -251,14 +260,14 @@ export function PropertyForm() {
                 const parsed = parseSizeInput(e.target.value)
                 set('size_pyeong', parsed)
               }}
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl text-[15px] min-h-[48px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className={inputCls}
             />
             {form.size_pyeong != null && (
-              <p className="text-[12px] text-blue-500 font-medium">{form.size_pyeong}평</p>
+              <p className="text-[12px] text-[#3182f6] font-medium mt-1.5">{form.size_pyeong}평</p>
             )}
           </div>
-          <div className="flex-1 space-y-1.5">
-            <label className="text-[13px] font-semibold text-gray-500">층수</label>
+          <div className="flex-1">
+            <label className={labelCls}>층수</label>
             <input
               placeholder="예: 5/12"
               value={floorInput}
@@ -266,27 +275,27 @@ export function PropertyForm() {
                 setFloorInput(e.target.value)
                 set('floor', parseFloorInput(e.target.value))
               }}
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl text-[15px] min-h-[48px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className={inputCls}
             />
             {form.floor != null && (
-              <p className="text-[12px] text-blue-500 font-medium">{form.floor}층</p>
+              <p className="text-[12px] text-[#3182f6] font-medium mt-1.5">{form.floor}층</p>
             )}
           </div>
         </div>
 
         {/* 방향 */}
-        <div className="space-y-1.5">
-          <label className="text-[13px] font-semibold text-gray-500">방향</label>
+        <div>
+          <label className={labelCls}>방향</label>
           <div className="flex flex-wrap gap-2">
             {DIRECTIONS.map((d) => (
               <button
                 key={d}
                 type="button"
                 onClick={() => set('direction', form.direction === d ? '' : d)}
-                className={`px-4 py-2 rounded-xl text-[14px] font-medium border transition-colors min-h-[44px] ${
+                className={`h-[44px] px-4 rounded-2xl text-[14px] font-medium transition-colors ${
                   form.direction === d
-                    ? 'bg-blue-500 text-white border-blue-500'
-                    : 'bg-white text-gray-600 border-gray-200'
+                    ? 'bg-[#3182f6] text-white'
+                    : 'bg-[#2c2c35] text-[#8b95a1]'
                 }`}
               >
                 {d}
@@ -297,26 +306,26 @@ export function PropertyForm() {
 
         {/* 방수 + 욕실수 */}
         <div className="flex gap-3">
-          <div className="flex-1 space-y-1.5">
-            <label className="text-[13px] font-semibold text-gray-500">방 수</label>
+          <div className="flex-1">
+            <label className={labelCls}>방 수</label>
             <input
               type="number"
               placeholder="2"
               min="0"
               value={form.rooms ?? ''}
               onChange={(e) => set('rooms', numOrNull(e.target.value))}
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl text-[15px] min-h-[48px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className={inputCls}
             />
           </div>
-          <div className="flex-1 space-y-1.5">
-            <label className="text-[13px] font-semibold text-gray-500">욕실 수</label>
+          <div className="flex-1">
+            <label className={labelCls}>욕실 수</label>
             <input
               type="number"
               placeholder="1"
               min="0"
               value={form.bathrooms ?? ''}
               onChange={(e) => set('bathrooms', numOrNull(e.target.value))}
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl text-[15px] min-h-[48px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className={inputCls}
             />
           </div>
         </div>
@@ -326,91 +335,117 @@ export function PropertyForm() {
           <button
             type="button"
             onClick={() => setFullOption(!fullOption)}
-            className={`flex-1 flex items-center justify-between px-4 py-3 rounded-xl border transition-colors min-h-[48px] ${
-              fullOption ? 'bg-blue-50 border-blue-400' : 'bg-white border-gray-200'
+            className={`flex-1 flex items-center justify-between px-4 h-[52px] rounded-2xl transition-colors ${
+              fullOption ? 'bg-[#0d2e20] border border-[#00b76a]/30' : 'bg-[#2c2c35]'
             }`}
           >
-            <span className={`text-[15px] font-medium ${fullOption ? 'text-blue-600' : 'text-gray-700'}`}>풀옵션</span>
-            <div className={`w-11 h-6 rounded-full transition-colors relative ${fullOption ? 'bg-blue-500' : 'bg-gray-300'}`}>
+            <span className={`text-[15px] font-semibold ${fullOption ? 'text-[#00b76a]' : 'text-[#8b95a1]'}`}>풀옵션</span>
+            <div className={`w-11 h-6 rounded-full transition-colors relative ${fullOption ? 'bg-[#00b76a]' : 'bg-[#4e5968]'}`}>
               <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${fullOption ? 'translate-x-5' : 'translate-x-0.5'}`} />
             </div>
           </button>
           <button
             type="button"
             onClick={() => set('parking', !form.parking)}
-            className={`flex-1 flex items-center justify-between px-4 py-3 rounded-xl border transition-colors min-h-[48px] ${
-              form.parking ? 'bg-blue-50 border-blue-400' : 'bg-white border-gray-200'
+            className={`flex-1 flex items-center justify-between px-4 h-[52px] rounded-2xl transition-colors ${
+              form.parking ? 'bg-[#1a3a5c] border border-[#3182f6]/30' : 'bg-[#2c2c35]'
             }`}
           >
-            <span className={`text-[15px] font-medium ${form.parking ? 'text-blue-600' : 'text-gray-700'}`}>주차</span>
-            <div className={`w-11 h-6 rounded-full transition-colors relative ${form.parking ? 'bg-blue-500' : 'bg-gray-300'}`}>
+            <span className={`text-[15px] font-semibold ${form.parking ? 'text-[#3182f6]' : 'text-[#8b95a1]'}`}>주차</span>
+            <div className={`w-11 h-6 rounded-full transition-colors relative ${form.parking ? 'bg-[#3182f6]' : 'bg-[#4e5968]'}`}>
               <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${form.parking ? 'translate-x-5' : 'translate-x-0.5'}`} />
             </div>
           </button>
         </div>
 
         {/* 주소 */}
-        <div className="space-y-1.5">
-          <label className="text-[13px] font-semibold text-gray-500">주소</label>
+        <div>
+          <label className={labelCls}>주소</label>
           <div className="flex gap-2">
             <input
               placeholder="서울시 강남구 논현동..."
               value={form.address}
               onChange={(e) => set('address', e.target.value)}
               onBlur={handleGeocode}
-              className="flex-1 px-4 py-3 border border-gray-200 rounded-xl text-[15px] min-h-[48px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className="flex-1 h-[52px] px-4 bg-[#2c2c35] rounded-2xl text-[15px] text-white placeholder:text-[#4e5968] border-2 border-transparent focus:border-[#3182f6] transition-all"
             />
             <button
               type="button"
               onClick={handleGeocode}
               disabled={geocoding || !form.address.trim()}
-              className="px-4 py-3 bg-gray-100 text-gray-700 rounded-xl text-[14px] font-medium min-h-[48px] disabled:opacity-40 whitespace-nowrap"
+              className="h-[52px] px-4 bg-[#2c2c35] text-[#8b95a1] rounded-2xl text-[14px] font-medium disabled:opacity-40 whitespace-nowrap active:opacity-60 transition-opacity"
             >
               {geocoding ? '검색중...' : '검색'}
             </button>
           </div>
           {form.latitude && form.longitude && (
-            <p className="text-[12px] text-green-600 font-medium">위치 확인됨 ({form.latitude.toFixed(4)}, {form.longitude.toFixed(4)})</p>
+            <p className="text-[12px] text-[#00b76a] font-medium mt-1.5">위치 확인됨 ({form.latitude.toFixed(4)}, {form.longitude.toFixed(4)})</p>
           )}
         </div>
 
+        {/* 관리비 */}
+        <div>
+          <label className={labelCls}>관리비 (만원/월)</label>
+          <input
+            type="number"
+            placeholder="예: 15"
+            min="0"
+            value={form.maintenance_fee ?? ''}
+            onChange={(e) => set('maintenance_fee', numOrNull(e.target.value))}
+            className={inputCls}
+          />
+        </div>
+
+        {/* 입주 가능일 */}
+        <div>
+          <label className={labelCls}>입주 가능일</label>
+          <input
+            type="text"
+            placeholder="예: 2025-03-01 또는 즉시입주"
+            value={form.move_in_date ?? ''}
+            onChange={(e) => set('move_in_date', e.target.value)}
+            className={inputCls}
+          />
+        </div>
+
         {/* 링크 */}
-        <div className="space-y-1.5">
-          <label className="text-[13px] font-semibold text-gray-500">링크 (네이버 부동산 등)</label>
+        <div>
+          <label className={labelCls}>링크 (네이버 부동산 등)</label>
           <input
             type="url"
             placeholder="https://..."
             value={linkInput}
             onChange={(e) => setLinkInput(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-200 rounded-xl text-[15px] min-h-[48px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            className={inputCls}
           />
         </div>
 
         {/* 메모 */}
-        <div className="space-y-1.5">
-          <label className="text-[13px] font-semibold text-gray-500">메모</label>
+        <div>
+          <label className={labelCls}>메모</label>
           <textarea
             placeholder="특이사항, 느낀점 등 자유롭게 작성하세요"
             value={form.memo}
             onChange={(e) => set('memo', e.target.value)}
             rows={4}
-            className="w-full px-4 py-3 border border-gray-200 rounded-xl text-[15px] resize-none focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            className="w-full px-4 py-3 bg-[#2c2c35] rounded-2xl text-[15px] text-white placeholder:text-[#4e5968] border-2 border-transparent focus:border-[#3182f6] transition-all resize-none leading-relaxed"
           />
         </div>
 
         {/* 별점 */}
-        <div className="space-y-1.5">
-          <label className="text-[13px] font-semibold text-gray-500">별점</label>
+        <div>
+          <label className={labelCls}>별점</label>
           <RatingStars value={form.rating} onChange={(v) => set('rating', v)} />
         </div>
       </form>
 
       {/* 저장 버튼 - 하단 고정 */}
-      <div className="fixed bottom-0 left-0 right-0 px-4 pb-6 pt-3 bg-white border-t border-gray-100">
+      <div className="fixed bottom-0 left-0 right-0 px-5 pb-6 pt-3 bg-[#17171c] border-t border-[#2c2c35]">
         <button
+          type="button"
           onClick={handleSubmit}
           disabled={saving}
-          className="w-full py-4 bg-blue-500 text-white rounded-2xl text-[16px] font-bold min-h-[52px] disabled:opacity-50 active:scale-[0.98] transition-transform"
+          className="toss-btn w-full h-[52px] bg-[#3182f6] text-white rounded-2xl text-[16px] font-bold disabled:bg-[#4e5968]"
         >
           {saving ? '저장 중...' : isEdit ? '수정 완료' : '등록하기'}
         </button>

@@ -1,7 +1,7 @@
 {
-  "tool_name": "WebFetch",
-  "tool_input_preview": "{\"url\":\"https://developers.naver.com/docs/utils/openmap/\",\"prompt\":\"What is the URL format for opening Naver Maps directions? Show any URL schemes for directions/navigation with start and end points.\"...",
-  "error": "Claude Code is unable to fetch from developers.naver.com",
-  "timestamp": "2026-04-03T14:35:56.950Z",
-  "retry_count": 2
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"ls \\\"C:\\\\Users\\\\shin\\\\Projects\\\\house-hunting-app/CLAUDE.md\\\" 2>&1\",\"description\":\"Check if CLAUDE.md exists\"}",
+  "error": "Exit code 2\nls: cannot access 'C:\\Users\\shin\\Projects\\house-hunting-app/CLAUDE.md': No such file or directory",
+  "timestamp": "2026-04-03T23:09:46.967Z",
+  "retry_count": 1
 }

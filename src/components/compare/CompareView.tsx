@@ -90,7 +90,7 @@ export function CompareView() {
                   const pv = getPriceValue(p)
                   let cls = 'text-white'
                   if (isPriceRow && properties.length > 1) {
-                    if (pv === minPrice) cls = 'text-[#3182f6] font-bold'
+                    if (pv === minPrice) cls = 'text-[#00b76a] font-bold'
                     else if (pv === maxPrice) cls = 'text-[#f04452] font-bold'
                     else cls = 'text-white font-bold'
                   }
