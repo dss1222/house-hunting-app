@@ -15,9 +15,9 @@ function AppRoutes() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-dvh bg-white gap-4">
-        <div className="text-[32px] font-bold text-text tracking-tight">우리집 찾기</div>
-        <div className="w-5 h-5 border-2 border-[#e5e8eb] border-t-[#3182f6] rounded-full animate-spin" />
+      <div className="flex flex-col items-center justify-center min-h-dvh bg-[#17171c] gap-4">
+        <div className="text-[28px] font-bold text-white tracking-tight">우리집 찾기</div>
+        <div className="w-5 h-5 border-2 border-[#2c2c35] border-t-[#3182f6] rounded-full animate-spin" />
       </div>
     )
   }

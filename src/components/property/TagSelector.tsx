@@ -26,7 +26,7 @@ export function TagSelector({ selected, onChange }: TagSelectorProps) {
             className={`px-4 py-2.5 rounded-full text-[14px] min-h-[40px] transition-colors active:scale-95 ${
               isSelected
                 ? 'bg-[#3182f6] text-white font-semibold'
-                : 'bg-[#f2f4f6] text-[#4e5968] font-medium'
+                : 'bg-[#2c2c35] text-[#8b95a1] font-medium'
             }`}
           >
             {tag}

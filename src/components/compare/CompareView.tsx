@@ -42,8 +42,8 @@ export function CompareView() {
     return (
       <div className="flex flex-col items-center justify-center px-5 text-center min-h-[65vh] animate-fade-in">
         <div className="text-[48px] mb-5">📊</div>
-        <p className="text-[20px] font-bold text-text mb-2">비교할 매물이 없어요</p>
-        <p className="text-[14px] text-text-secondary">먼저 매물을 등록해 주세요</p>
+        <p className="text-[20px] font-bold text-white mb-2">비교할 매물이 없어요</p>
+        <p className="text-[14px] text-[#8b95a1]">먼저 매물을 등록해 주세요</p>
       </div>
     )
   }
@@ -54,19 +54,19 @@ export function CompareView() {
 
   return (
     <div className="animate-fade-in">
-      <div className="px-5 pt-4 pb-4">
-        <p className="text-[22px] font-bold text-text">{properties.length}개 비교</p>
+      <div className="px-5 pt-2 pb-4">
+        <p className="text-[22px] font-bold text-white">{properties.length}개 비교</p>
       </div>
 
       <div className="overflow-x-auto">
         <table className="w-max min-w-full">
           <thead>
             <tr>
-              <th className="sticky left-0 z-10 bg-white px-5 py-3 text-left text-[13px] font-semibold text-text-secondary border-b-2 border-[#f2f4f6] min-w-[72px]">
+              <th className="sticky left-0 z-10 bg-[#17171c] px-5 py-3 text-left text-[13px] font-semibold text-[#8b95a1] border-b-2 border-[#2c2c35] min-w-[72px]">
                 항목
               </th>
               {properties.map((p) => (
-                <th key={p.id} className="px-4 py-3 text-center border-b-2 border-[#f2f4f6] min-w-[120px] bg-white">
+                <th key={p.id} className="px-4 py-3 text-center border-b-2 border-[#2c2c35] min-w-[120px] bg-[#17171c]">
                   <button
                     onClick={() => navigate(`/property/${p.id}`)}
                     className="text-[14px] text-[#3182f6] font-bold truncate max-w-[110px] mx-auto block min-h-[40px] leading-[40px] active:opacity-50 transition-opacity"
@@ -79,25 +79,28 @@ export function CompareView() {
           </thead>
           <tbody>
             {fields.map((field, idx) => (
-              <tr key={field.key} className={idx % 2 === 1 ? 'bg-[#fafbfc]' : 'bg-white'}>
-                <td className={`sticky left-0 z-10 ${idx % 2 === 1 ? 'bg-[#fafbfc]' : 'bg-white'} px-5 py-3.5 text-[13px] font-medium text-text-secondary border-b border-[#f2f4f6]`}>
+              <tr key={field.key} className={idx % 2 === 1 ? 'bg-[#1c1c22]' : 'bg-[#17171c]'}>
+                <td className={`sticky left-0 z-10 ${idx % 2 === 1 ? 'bg-[#1c1c22]' : 'bg-[#17171c]'} px-5 py-3.5 text-[13px] font-medium text-[#8b95a1] border-b border-[#2c2c35]`}>
                   {field.label}
                 </td>
                 {properties.map((p) => {
                   const value = field.render ? field.render(p) : String(p[field.key as keyof Property] ?? '-')
                   const isPriceRow = field.key === 'priceDisplay'
                   const pv = getPriceValue(p)
-                  let cls = 'text-text'
+                  let cls = 'text-white'
                   if (isPriceRow && properties.length > 1) {
                     if (pv === minPrice) cls = 'text-[#3182f6] font-bold'
                     else if (pv === maxPrice) cls = 'text-[#f04452] font-bold'
-                    else cls = 'text-text font-bold'
+                    else cls = 'text-white font-bold'
                   }
                   if (field.key === 'parking') {
-                    cls = p.parking ? 'text-[#3182f6] font-semibold' : 'text-text-tertiary'
+                    cls = p.parking ? 'text-[#3182f6] font-semibold' : 'text-[#4e5968]'
+                  }
+                  if (field.key === 'rating' && p.rating) {
+                    cls = 'text-[#ffb800]'
                   }
                   return (
-                    <td key={p.id} className={`px-4 py-3.5 text-center text-[14px] border-b border-[#f2f4f6] ${cls}`}>
+                    <td key={p.id} className={`px-4 py-3.5 text-center text-[14px] border-b border-[#2c2c35] ${cls}`}>
                       {value}
                     </td>
                   )

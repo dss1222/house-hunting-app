@@ -51,7 +51,7 @@ export function PropertyDetail() {
     return (
       <div className="flex flex-col items-center justify-center px-5 min-h-[60vh] animate-fade-in">
         <p className="text-[48px] mb-4">😢</p>
-        <p className="text-[15px] text-text-secondary">매물을 찾을 수 없습니다</p>
+        <p className="text-[15px] text-[#8b95a1]">매물을 찾을 수 없습니다</p>
       </div>
     )
   }
@@ -87,11 +87,11 @@ export function PropertyDetail() {
   if (property.move_in_date) infoRows.push({ label: '입주 가능일', value: property.move_in_date })
 
   return (
-    <div className="animate-fade-in bg-white">
+    <div className="animate-fade-in bg-[#17171c]">
       {/* Nav */}
       <div className="flex items-center justify-between px-2 h-[48px]">
         <button onClick={() => navigate(-1)} className="w-[44px] h-[44px] flex items-center justify-center active:opacity-50 transition-opacity">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#191f28" strokeWidth="2" strokeLinecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round"><path d="M15 18l-6-6 6-6"/></svg>
         </button>
         <div className="flex">
           <button onClick={() => navigate(`/property/${id}/edit`)} className="h-[44px] px-4 text-[14px] text-[#3182f6] font-semibold active:opacity-50 transition-opacity">수정</button>
@@ -101,10 +101,10 @@ export function PropertyDetail() {
         </div>
       </div>
 
-      {/* Hero section - name, address, price */}
+      {/* Hero section */}
       <div className="px-5 pt-2 pb-7">
-        <h2 className="text-[24px] font-bold text-text leading-tight mb-1">{property.name}</h2>
-        <p className={`text-[14px] text-text-secondary ${property.latitude && property.longitude ? '' : 'mb-6'}`}>{property.address}</p>
+        <h2 className="text-[24px] font-bold text-white leading-tight mb-1">{property.name}</h2>
+        <p className={`text-[14px] text-[#8b95a1] ${property.latitude && property.longitude ? '' : 'mb-6'}`}>{property.address}</p>
 
         {property.latitude && property.longitude && (
           <div className="flex gap-2 mt-3 mb-6">
@@ -112,7 +112,7 @@ export function PropertyDetail() {
               <button
                 key={dest.name}
                 onClick={() => openDirections(dest)}
-                className="text-[13px] text-[#3182f6] bg-[#e8f3ff] px-3 py-1.5 rounded-lg font-medium active:opacity-50 transition-opacity"
+                className="text-[13px] text-[#3182f6] bg-[#1a3a5c] px-3 py-1.5 rounded-lg font-medium active:opacity-50 transition-opacity"
               >
                 🚌 {dest.name} 길찾기
               </button>
@@ -120,13 +120,13 @@ export function PropertyDetail() {
           </div>
         )}
 
-        {/* Price - hero sized */}
+        {/* Price */}
         <div className="mb-1">
           <span className="text-[13px] font-semibold text-[#3182f6]">{property.price_type}</span>
         </div>
         <div className="flex items-baseline gap-1">
-          <span className="text-[32px] font-bold text-text tracking-tight leading-none">{priceDisplay()}</span>
-          <span className="text-[16px] text-text-secondary font-medium">만원</span>
+          <span className="text-[32px] font-bold text-white tracking-tight leading-none">{priceDisplay()}</span>
+          <span className="text-[16px] text-[#8b95a1] font-medium">만원</span>
         </div>
 
         {/* Rating */}
@@ -138,7 +138,7 @@ export function PropertyDetail() {
         {property.tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-5">
             {property.tags.map((tag) => (
-              <span key={tag} className="text-[13px] text-[#3182f6] bg-[#e8f3ff] px-3 py-1.5 rounded-lg font-medium">{tag}</span>
+              <span key={tag} className="text-[13px] text-[#3182f6] bg-[#1a3a5c] px-3 py-1.5 rounded-lg font-medium">{tag}</span>
             ))}
           </div>
         )}
@@ -149,12 +149,12 @@ export function PropertyDetail() {
 
       {/* Detail info */}
       <div className="px-5 py-6">
-        <h3 className="text-[18px] font-bold text-text mb-2">상세 정보</h3>
+        <h3 className="text-[18px] font-bold text-white mb-2">상세 정보</h3>
         <div>
           {infoRows.map((row) => (
-            <div key={row.label} className="flex items-center justify-between py-[14px] border-b border-[#f2f4f6] last:border-0">
-              <span className="text-[15px] text-text-secondary">{row.label}</span>
-              <span className={`text-[15px] font-medium ${row.label === '주차' && row.value === '가능' ? 'text-[#3182f6]' : 'text-text'}`}>{row.value}</span>
+            <div key={row.label} className="flex items-center justify-between py-[14px] border-b border-[#2c2c35] last:border-0">
+              <span className="text-[15px] text-[#8b95a1]">{row.label}</span>
+              <span className={`text-[15px] font-medium ${row.label === '주차' && row.value === '가능' ? 'text-[#3182f6]' : 'text-white'}`}>{row.value}</span>
             </div>
           ))}
         </div>
@@ -165,8 +165,8 @@ export function PropertyDetail() {
         <>
           <div className="toss-section-divider" />
           <div className="px-5 py-6">
-            <h3 className="text-[18px] font-bold text-text mb-3">메모</h3>
-            <p className="text-[15px] text-text-secondary leading-[1.65] whitespace-pre-wrap">{property.memo}</p>
+            <h3 className="text-[18px] font-bold text-white mb-3">메모</h3>
+            <p className="text-[15px] text-[#8b95a1] leading-[1.65] whitespace-pre-wrap">{property.memo}</p>
           </div>
         </>
       )}

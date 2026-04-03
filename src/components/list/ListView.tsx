@@ -9,7 +9,7 @@ export function ListView() {
   if (loading) {
     return (
       <div className="px-5 pt-6">
-        <div className="h-7 w-24 skeleton mb-6" />
+        <div className="h-7 w-28 skeleton mb-6" />
         <div className="space-y-6">
           {[1, 2, 3].map((i) => (
             <div key={i} className="space-y-2.5">
@@ -27,10 +27,10 @@ export function ListView() {
     return (
       <div className="flex flex-col items-center justify-center px-5 text-center min-h-[65vh] animate-fade-in">
         <div className="text-[48px] mb-5">🏠</div>
-        <p className="text-[20px] font-bold text-text mb-2 leading-snug">
+        <p className="text-[20px] font-bold text-white mb-2 leading-snug">
           아직 등록된 매물이 없어요
         </p>
-        <p className="text-[14px] text-text-secondary mb-10 leading-relaxed">
+        <p className="text-[14px] text-[#8b95a1] mb-10 leading-relaxed">
           집을 보러 다니면서<br />매물 정보를 기록해보세요
         </p>
         <button
@@ -45,27 +45,22 @@ export function ListView() {
 
   return (
     <div className="animate-fade-in">
-      {/* Section title */}
-      <div className="px-5 pt-4 pb-2">
-        <p className="text-[22px] font-bold text-text">
-          {properties.length}개의 매물
-        </p>
+      <div className="px-5 pt-2 pb-1">
+        <p className="text-[22px] font-bold text-white">{properties.length}개의 매물</p>
       </div>
 
-      {/* List */}
       <div className="stagger">
         {properties.map((property) => (
-          <div key={property.id} className="animate-fade-in">
+          <div key={property.id} className="animate-fade-in border-b border-[#2c2c35] last:border-0">
             <PropertyCard property={property} />
           </div>
         ))}
       </div>
 
-      {/* FAB */}
       <button
         onClick={() => navigate('/property/new')}
         className="toss-btn fixed right-5 bottom-[76px] w-[56px] h-[56px] bg-[#3182f6] text-white rounded-full z-30"
-        style={{ boxShadow: '0 4px 16px rgba(49,130,246,0.35)' }}
+        style={{ boxShadow: '0 4px 16px rgba(49,130,246,0.4)' }}
         aria-label="매물 추가"
       >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
