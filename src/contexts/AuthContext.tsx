@@ -35,20 +35,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    return { error: error?.message ?? null }
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      return { error: error?.message ?? null }
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : '네트워크 오류'
+      console.error('signIn error:', e)
+      return { error: msg }
+    }
   }
 
   const signUp = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { emailRedirectTo: window.location.origin },
-    })
-    if (error) return { error: error.message }
-    // 가입 후 바로 로그인 시도
-    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password })
-    return { error: signInError?.message ?? null }
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { emailRedirectTo: window.location.origin },
+      })
+      if (error) return { error: error.message }
+      // 이메일 확인 필요 없이 바로 세션이 생성된 경우
+      if (data.session) return { error: null }
+      // 가입 후 바로 로그인 시도
+      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password })
+      return { error: signInError?.message ?? null }
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : '네트워크 오류'
+      console.error('signUp error:', e)
+      return { error: msg }
+    }
   }
 
   const signOut = async () => {
