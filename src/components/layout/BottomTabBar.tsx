@@ -4,20 +4,18 @@ const tabs = [
   {
     path: '/',
     label: '홈',
-    icon: (a: boolean) => (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill={a ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={a ? 0 : 1.8} strokeLinecap="round" strokeLinejoin="round">
-        {a
-          ? <path d="M3 10.5L12 3l9 7.5V21a1 1 0 01-1 1H4a1 1 0 01-1-1V10.5z"/>
-          : <><path d="M3 10.5L12 3l9 7.5V21a1 1 0 01-1 1H4a1 1 0 01-1-1V10.5z"/><path d="M9 22V12h6v10"/></>
-        }
+    icon: (active: boolean) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? '#191f28' : 'none'} stroke={active ? '#191f28' : '#b0b8c1'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 10.5L12 3l9 7.5V20a2 2 0 01-2 2H5a2 2 0 01-2-2V10.5z"/>
+        {!active && <path d="M9 22V12h6v10"/>}
       </svg>
     ),
   },
   {
     path: '/compare',
     label: '비교',
-    icon: (a: boolean) => (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={a ? 2.2 : 1.8} strokeLinecap="round" strokeLinejoin="round">
+    icon: (active: boolean) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active ? '#191f28' : '#b0b8c1'} strokeWidth={active ? 2.4 : 2} strokeLinecap="round">
         <path d="M18 20V10M12 20V4M6 20v-6"/>
       </svg>
     ),
@@ -25,9 +23,9 @@ const tabs = [
   {
     path: '/map',
     label: '지도',
-    icon: (a: boolean) => (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={a ? 2.2 : 1.8} strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
+    icon: (active: boolean) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? '#191f28' : 'none'} stroke={active ? '#191f28' : '#b0b8c1'} strokeWidth="2" strokeLinecap="round">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3" fill={active ? 'white' : 'none'}/>
       </svg>
     ),
   },
@@ -43,22 +41,26 @@ export function BottomTabBar() {
   }
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-[#f2f4f6] flex justify-around items-end h-[72px] z-50 pb-[env(safe-area-inset-bottom)]">
-      {tabs.map((tab) => {
-        const active = isActive(tab.path)
-        return (
-          <button
-            key={tab.path}
-            onClick={() => navigate(tab.path)}
-            className={`flex flex-col items-center justify-center flex-1 pt-2 pb-1.5 gap-0.5 transition-colors ${
-              active ? 'text-text' : 'text-text-tertiary'
-            }`}
-          >
-            {tab.icon(active)}
-            <span className={`text-[10px] ${active ? 'font-bold' : 'font-normal'}`}>{tab.label}</span>
-          </button>
-        )
-      })}
+    <nav className="fixed bottom-0 left-0 right-0 bg-white z-50" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
+      {/* Top border */}
+      <div className="h-px bg-[#f2f4f6]" />
+      <div className="flex justify-around items-center h-[56px]">
+        {tabs.map((tab) => {
+          const active = isActive(tab.path)
+          return (
+            <button
+              key={tab.path}
+              onClick={() => navigate(tab.path)}
+              className="flex flex-col items-center justify-center flex-1 h-full gap-1"
+            >
+              {tab.icon(active)}
+              <span className={`text-[10px] leading-none ${active ? 'font-bold text-text' : 'font-medium text-text-tertiary'}`}>
+                {tab.label}
+              </span>
+            </button>
+          )
+        })}
+      </div>
     </nav>
   )
 }

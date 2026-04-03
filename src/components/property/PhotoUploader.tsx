@@ -22,14 +22,14 @@ export function PhotoUploader({ photos, uploading, onUpload, onDelete }: PhotoUp
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-[16px] font-bold text-text">사진</h3>
+        <h3 className="text-[18px] font-bold text-text">사진</h3>
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
           disabled={uploading}
-          className="text-[14px] text-primary font-semibold min-h-[44px] flex items-center active:opacity-60 transition-opacity"
+          className="text-[14px] text-[#3182f6] font-semibold min-h-[44px] active:opacity-50 transition-opacity"
         >
-          {uploading ? '업로드 중...' : '+ 추가'}
+          {uploading ? '업로드 중...' : '추가'}
         </button>
         <input
           ref={inputRef}
@@ -43,21 +43,21 @@ export function PhotoUploader({ photos, uploading, onUpload, onDelete }: PhotoUp
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
-          className="w-full flex flex-col items-center justify-center py-10 bg-[#f2f4f6] rounded-2xl active:bg-[#e5e8eb] transition-colors"
+          className="w-full flex flex-col items-center justify-center py-12 bg-[#f2f4f6] rounded-2xl active:bg-[#e5e8eb] transition-colors"
         >
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#b0b8c1" strokeWidth="1.5" strokeLinecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-          <p className="text-[13px] text-text-tertiary mt-2">탭하여 사진 추가</p>
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#b0b8c1" strokeWidth="1.5" strokeLinecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          <p className="text-[14px] text-text-tertiary mt-3">탭하여 사진을 추가하세요</p>
         </button>
       )}
-      <div className="grid grid-cols-3 gap-1.5">
+      <div className="grid grid-cols-3 gap-2">
         {photos.map((photo) => (
-          <div key={photo.id} className="relative aspect-square rounded-xl overflow-hidden bg-[#f2f4f6]">
+          <div key={photo.id} className="relative aspect-square rounded-2xl overflow-hidden bg-[#f2f4f6]">
             <img src={photo.url} alt="" className="w-full h-full object-cover" />
             <button
               onClick={() => onDelete(photo)}
-              className="absolute top-2 right-2 w-6 h-6 bg-black/40 text-white rounded-full flex items-center justify-center active:bg-black/60 transition-colors"
+              className="absolute top-2 right-2 w-7 h-7 bg-black/40 text-white rounded-full flex items-center justify-center active:bg-black/60 transition-colors"
             >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
             </button>
           </div>
         ))}

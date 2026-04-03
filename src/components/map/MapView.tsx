@@ -42,13 +42,11 @@ export function MapView() {
           ? `${p.deposit ?? p.price ?? 0}`
           : `${p.price ?? 0}`
 
-      const stars = '★'.repeat(Math.round(p.rating))
-
       const infoContent = `
-        <div style="padding:12px 16px;min-width:160px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;cursor:pointer;line-height:1.5" id="info-${p.id}">
-          <div style="font-size:15px;font-weight:700;color:#191f28;margin-bottom:2px">${p.name}</div>
-          <div style="font-size:13px;color:#3182f6;font-weight:700">${p.price_type} ${priceText}만원</div>
-          ${stars ? `<div style="font-size:12px;color:#ffb800;margin-top:2px">${stars}</div>` : ''}
+        <div style="padding:14px 18px;min-width:170px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;cursor:pointer;line-height:1.6;border-radius:16px" id="info-${p.id}">
+          <div style="font-size:16px;font-weight:700;color:#191f28;letter-spacing:-0.02em">${p.name}</div>
+          <div style="font-size:14px;color:#3182f6;font-weight:700;margin-top:4px">${p.price_type} ${priceText}만원</div>
+          ${p.rating ? `<div style="font-size:12px;color:#ffb800;margin-top:2px">${'★'.repeat(Math.round(p.rating))}</div>` : ''}
         </div>
       `
 
@@ -76,18 +74,18 @@ export function MapView() {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center px-5 text-center min-h-[60vh] animate-fade-in">
-        <p className="text-[40px] mb-4">😢</p>
+        <p className="text-[48px] mb-4">😢</p>
         <p className="text-[15px] text-text-secondary mb-6">지도를 불러올 수 없습니다</p>
-        <button onClick={() => window.location.reload()} className="px-6 py-3 bg-primary text-white rounded-2xl text-[14px] font-semibold min-h-[48px] active:bg-primary-dark transition-colors">새로고침</button>
+        <button onClick={() => window.location.reload()} className="toss-btn h-[48px] px-6 bg-[#3182f6] text-white rounded-2xl text-[14px]">새로고침</button>
       </div>
     )
   }
 
   if (!isReady || loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-3 animate-fade-in">
-        <div className="w-8 h-8 border-2 border-[#f2f4f6] border-t-primary rounded-full animate-spin" />
-        <p className="text-[14px] text-text-tertiary">지도 로딩 중...</p>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-3">
+        <div className="w-6 h-6 border-2 border-[#e5e8eb] border-t-[#3182f6] rounded-full animate-spin" />
+        <p className="text-[14px] text-text-tertiary">지도 로딩 중</p>
       </div>
     )
   }
@@ -99,7 +97,7 @@ export function MapView() {
       <div ref={mapRef} className="w-full h-full" />
       {propsWithCoords.length === 0 && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="bg-card px-5 py-3 rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.08)] flex items-center gap-2">
+          <div className="bg-white px-5 py-3.5 rounded-2xl flex items-center gap-2" style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.08)' }}>
             <p className="text-[14px] text-text-secondary">좌표가 등록된 매물이 없습니다</p>
           </div>
         </div>

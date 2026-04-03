@@ -16,8 +16,7 @@ const fields: { key: keyof Property | 'priceDisplay'; label: string; render?: (p
   { key: 'parking', label: '주차', render: (p) => p.parking ? '가능' : '불가' },
   { key: 'maintenance_fee', label: '관리비', render: (p) => p.maintenance_fee ? `${p.maintenance_fee}만` : '-' },
   { key: 'direction', label: '방향', render: (p) => p.direction ?? '-' },
-  { key: 'rating', label: '별점', render: (p) => p.rating ? '★'.repeat(Math.round(p.rating)) : '-' },
-  { key: 'tags', label: '태그', render: (p) => p.tags.length > 0 ? p.tags.join(', ') : '-' },
+  { key: 'rating', label: '별점', render: (p) => p.rating ? `${p.rating}점` : '-' },
 ]
 
 function getPriceValue(p: Property): number {
@@ -33,17 +32,18 @@ export function CompareView() {
   if (loading) {
     return (
       <div className="px-5 pt-6 space-y-4">
-        {[1, 2, 3].map(i => <div key={i} className="h-10 skeleton" />)}
+        <div className="h-7 w-32 skeleton" />
+        {[1, 2, 3].map(i => <div key={i} className="h-12 skeleton" />)}
       </div>
     )
   }
 
   if (properties.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center px-5 text-center min-h-[60vh] animate-fade-in">
-        <p className="text-[40px] mb-4">📊</p>
-        <p className="text-[18px] font-bold text-text mb-2">비교할 매물이 없어요</p>
-        <p className="text-[14px] text-text-secondary">먼저 매물을 등록해 주세요.</p>
+      <div className="flex flex-col items-center justify-center px-5 text-center min-h-[65vh] animate-fade-in">
+        <div className="text-[48px] mb-5">📊</div>
+        <p className="text-[20px] font-bold text-text mb-2">비교할 매물이 없어요</p>
+        <p className="text-[14px] text-text-secondary">먼저 매물을 등록해 주세요</p>
       </div>
     )
   }
@@ -54,22 +54,22 @@ export function CompareView() {
 
   return (
     <div className="animate-fade-in">
-      <div className="px-5 pt-4 pb-3">
-        <h2 className="text-[18px] font-bold text-text">매물 비교</h2>
-        <p className="text-[13px] text-text-secondary mt-1">{properties.length}개 매물 비교 중</p>
+      <div className="px-5 pt-4 pb-4">
+        <p className="text-[22px] font-bold text-text">{properties.length}개 비교</p>
       </div>
+
       <div className="overflow-x-auto">
-        <table className="w-max min-w-full text-[14px]">
+        <table className="w-max min-w-full">
           <thead>
-            <tr className="border-b-2 border-[#f2f4f6]">
-              <th className="sticky left-0 z-10 bg-card px-5 py-3 text-left text-[13px] font-semibold text-text-secondary min-w-[80px]">
+            <tr>
+              <th className="sticky left-0 z-10 bg-white px-5 py-3 text-left text-[13px] font-semibold text-text-secondary border-b-2 border-[#f2f4f6] min-w-[72px]">
                 항목
               </th>
               {properties.map((p) => (
-                <th key={p.id} className="px-4 py-3 text-center min-w-[130px] bg-card">
+                <th key={p.id} className="px-4 py-3 text-center border-b-2 border-[#f2f4f6] min-w-[120px] bg-white">
                   <button
                     onClick={() => navigate(`/property/${p.id}`)}
-                    className="text-[14px] text-primary font-bold truncate max-w-[120px] block mx-auto min-h-[44px] flex items-center justify-center active:opacity-60 transition-opacity"
+                    className="text-[14px] text-[#3182f6] font-bold truncate max-w-[110px] mx-auto block min-h-[40px] leading-[40px] active:opacity-50 transition-opacity"
                   >
                     {p.name}
                   </button>
@@ -78,28 +78,26 @@ export function CompareView() {
             </tr>
           </thead>
           <tbody>
-            {fields.map((field) => (
-              <tr key={field.key} className="border-b border-[#f2f4f6]">
-                <td className="sticky left-0 z-10 bg-card px-5 py-3.5 text-[13px] font-medium text-text-secondary">
+            {fields.map((field, idx) => (
+              <tr key={field.key} className={idx % 2 === 1 ? 'bg-[#fafbfc]' : 'bg-white'}>
+                <td className={`sticky left-0 z-10 ${idx % 2 === 1 ? 'bg-[#fafbfc]' : 'bg-white'} px-5 py-3.5 text-[13px] font-medium text-text-secondary border-b border-[#f2f4f6]`}>
                   {field.label}
                 </td>
                 {properties.map((p) => {
                   const value = field.render ? field.render(p) : String(p[field.key as keyof Property] ?? '-')
                   const isPriceRow = field.key === 'priceDisplay'
                   const pv = getPriceValue(p)
-                  let cellClass = 'text-text'
+                  let cls = 'text-text'
                   if (isPriceRow && properties.length > 1) {
-                    if (pv === minPrice) cellClass = 'text-primary font-bold'
-                    else if (pv === maxPrice) cellClass = 'text-danger font-bold'
+                    if (pv === minPrice) cls = 'text-[#3182f6] font-bold'
+                    else if (pv === maxPrice) cls = 'text-[#f04452] font-bold'
+                    else cls = 'text-text font-bold'
                   }
                   if (field.key === 'parking') {
-                    cellClass = p.parking ? 'text-primary font-medium' : 'text-text-tertiary'
-                  }
-                  if (field.key === 'rating' && p.rating) {
-                    cellClass = 'text-star'
+                    cls = p.parking ? 'text-[#3182f6] font-semibold' : 'text-text-tertiary'
                   }
                   return (
-                    <td key={p.id} className={`px-4 py-3.5 text-center text-[14px] ${cellClass}`}>
+                    <td key={p.id} className={`px-4 py-3.5 text-center text-[14px] border-b border-[#f2f4f6] ${cls}`}>
                       {value}
                     </td>
                   )

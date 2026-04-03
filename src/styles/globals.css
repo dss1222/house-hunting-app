@@ -29,24 +29,27 @@
 }
 
 html {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
-  background-color: var(--color-card);
+  font-family: -apple-system, BlinkMacSystemFont, "Pretendard Variable", Pretendard, "Noto Sans KR", system-ui, sans-serif;
+  background-color: #ffffff;
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: 16px;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
+  word-break: keep-all;
 }
 
 body {
   min-height: 100dvh;
-  overscroll-behavior: none;
+  overscroll-behavior-y: none;
+  background: #ffffff;
 }
 
 #root {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
+  background: #ffffff;
 }
 
 input, select, textarea, button {
@@ -54,33 +57,33 @@ input, select, textarea, button {
   letter-spacing: inherit;
 }
 
-/* Hide scrollbar but keep scroll */
-::-webkit-scrollbar { width: 0; height: 0; }
+/* Hide scrollbar everywhere */
+* { scrollbar-width: none; }
+::-webkit-scrollbar { display: none; }
 
-/* Focus ring - Toss style */
+/* Toss-style input focus */
 input:focus, select:focus, textarea:focus {
   outline: none;
-  border-color: var(--color-primary) !important;
-  box-shadow: none;
 }
 
-/* Toss-style section divider */
-.toss-divider {
-  height: 8px;
-  background: var(--color-bg);
-  margin: 0 -20px;
-}
-
-/* Fade-in */
+/* Fade in */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 .animate-fade-in {
-  animation: fadeIn 0.3s ease-out both;
+  animation: fadeIn 0.25s ease-out both;
 }
 
-/* Skeleton - Toss style */
+/* Stagger children */
+.stagger > *:nth-child(1) { animation-delay: 0s; }
+.stagger > *:nth-child(2) { animation-delay: 0.03s; }
+.stagger > *:nth-child(3) { animation-delay: 0.06s; }
+.stagger > *:nth-child(4) { animation-delay: 0.09s; }
+.stagger > *:nth-child(5) { animation-delay: 0.12s; }
+.stagger > *:nth-child(n+6) { animation-delay: 0.15s; }
+
+/* Skeleton shimmer */
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
@@ -92,11 +95,38 @@ input:focus, select:focus, textarea:focus {
   border-radius: 8px;
 }
 
-/* Toss button press effect */
+/* Toss press - native iOS feel */
 .toss-press {
-  transition: background-color 0.1s, transform 0.1s;
+  transition: transform 0.15s cubic-bezier(0.2, 0, 0, 1), background-color 0.15s;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
 }
 .toss-press:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
   background-color: #f2f4f6;
+}
+
+/* Toss button style */
+.toss-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.1s, opacity 0.1s;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.toss-btn:active {
+  transform: scale(0.98);
+  opacity: 0.85;
+}
+
+/* Section divider - the signature Toss separator */
+.toss-section-divider {
+  height: 8px;
+  background: #f2f4f6;
+  flex-shrink: 0;
 }

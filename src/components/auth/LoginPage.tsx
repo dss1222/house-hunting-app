@@ -17,33 +17,26 @@ export function LoginPage() {
 
     if (isSignUp) {
       const { error } = await signUp(email, password)
-      if (error) {
-        setError(error)
-      }
-      // 가입+로그인 자동 처리됨 (AuthContext에서)
+      if (error) setError(error)
     } else {
       const { error } = await signIn(email, password)
-      if (error) {
-        setError(error)
-      }
+      if (error) setError(error)
     }
     setLoading(false)
   }
 
   if (signUpDone) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-dvh px-5 bg-card text-center">
-        <div className="w-16 h-16 rounded-full bg-success-light flex items-center justify-center mb-5">
-          <svg width="28" height="28" fill="none" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4" stroke="#00b76a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-        </div>
-        <h1 className="text-[22px] font-bold text-text mb-2">가입 완료!</h1>
-        <p className="text-[15px] text-text-secondary mb-10 leading-relaxed">
-          이메일로 확인 링크가 전송되었습니다.<br />
-          링크를 클릭한 후 로그인해주세요.
+      <div className="flex flex-col min-h-dvh bg-white px-6 pt-20">
+        <p className="text-[26px] font-bold text-text leading-tight mb-3">
+          가입이 완료되었어요
+        </p>
+        <p className="text-[15px] text-text-secondary leading-relaxed mb-12">
+          이메일로 전송된 확인 링크를 클릭한 후<br />로그인해주세요.
         </p>
         <button
           onClick={() => { setSignUpDone(false); setIsSignUp(false) }}
-          className="w-full py-4 bg-primary text-white rounded-2xl font-semibold text-[16px] min-h-[52px] active:bg-primary-dark transition-colors"
+          className="toss-btn w-full h-[54px] bg-[#3182f6] text-white rounded-2xl text-[16px]"
         >
           로그인하기
         </button>
@@ -52,67 +45,67 @@ export function LoginPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-dvh bg-card">
-      <div className="flex-1 flex flex-col justify-center px-5 pb-10">
-        {/* Header */}
-        <div className="mb-10">
-          <h1 className="text-[28px] font-bold text-text leading-tight mb-2">
-            우리집 찾기
-          </h1>
-          <p className="text-[15px] text-text-secondary leading-relaxed">
-            신혼부부를 위한 부동산 기록장
-          </p>
+    <div className="flex flex-col min-h-dvh bg-white">
+      {/* Top section with title */}
+      <div className="px-6 pt-20 pb-10">
+        <p className="text-[26px] font-bold text-text leading-snug">
+          {isSignUp ? '회원가입' : '로그인'}
+        </p>
+        <p className="text-[15px] text-text-secondary mt-2 leading-relaxed">
+          신혼부부를 위한 부동산 기록장
+        </p>
+      </div>
+
+      {/* Form */}
+      <form onSubmit={handleSubmit} className="flex-1 px-6">
+        <div className="mb-6">
+          <label className="text-[13px] font-semibold text-text-secondary block mb-2">이메일</label>
+          <input
+            type="email"
+            placeholder="example@email.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="w-full h-[52px] px-4 bg-[#f2f4f6] rounded-2xl text-[16px] text-text placeholder:text-[#b0b8c1] border-2 border-transparent focus:border-[#3182f6] focus:bg-white transition-all"
+          />
+        </div>
+        <div className="mb-4">
+          <label className="text-[13px] font-semibold text-text-secondary block mb-2">비밀번호</label>
+          <input
+            type="password"
+            placeholder="6자 이상 입력해주세요"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            minLength={6}
+            className="w-full h-[52px] px-4 bg-[#f2f4f6] rounded-2xl text-[16px] text-text placeholder:text-[#b0b8c1] border-2 border-transparent focus:border-[#3182f6] focus:bg-white transition-all"
+          />
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-3">
-          <div>
-            <label className="text-[13px] font-medium text-text-secondary mb-1.5 block">이메일</label>
-            <input
-              type="email"
-              placeholder="example@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full px-4 py-3.5 bg-[#f2f4f6] rounded-xl min-h-[50px] text-[15px] border-0 placeholder:text-text-tertiary"
-            />
-          </div>
-          <div>
-            <label className="text-[13px] font-medium text-text-secondary mb-1.5 block">비밀번호</label>
-            <input
-              type="password"
-              placeholder="6자 이상 입력해주세요"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={6}
-              className="w-full px-4 py-3.5 bg-[#f2f4f6] rounded-xl min-h-[50px] text-[15px] border-0 placeholder:text-text-tertiary"
-            />
-          </div>
+        {error && (
+          <p className="text-[#f04452] text-[13px] mb-4">{error}</p>
+        )}
+      </form>
 
-          {error && (
-            <p className="text-danger text-[13px] px-1">{error}</p>
-          )}
-
-          <div className="pt-3">
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-4 bg-primary text-white rounded-2xl font-semibold text-[16px] min-h-[52px] disabled:opacity-40 active:bg-primary-dark transition-colors"
-            >
-              {loading ? '처리 중...' : isSignUp ? '회원가입' : '로그인'}
-            </button>
-          </div>
-        </form>
-
+      {/* Bottom fixed area */}
+      <div className="px-6 pb-10 pt-4">
         <button
+          type="submit"
+          onClick={handleSubmit}
+          disabled={loading}
+          className="toss-btn w-full h-[54px] bg-[#3182f6] text-white rounded-2xl text-[16px] disabled:bg-[#b0b8c1] mb-4"
+        >
+          {loading ? '처리 중...' : isSignUp ? '회원가입' : '로그인'}
+        </button>
+        <button
+          type="button"
           onClick={() => { setIsSignUp(!isSignUp); setError('') }}
-          className="mt-5 text-[14px] text-text-secondary min-h-[44px] self-center"
+          className="w-full text-center text-[14px] text-text-secondary py-2"
         >
           {isSignUp ? (
-            <span>이미 계정이 있나요? <span className="text-primary font-semibold">로그인</span></span>
+            <>이미 계정이 있나요? <span className="text-[#3182f6] font-semibold">로그인</span></>
           ) : (
-            <span>계정이 없나요? <span className="text-primary font-semibold">회원가입</span></span>
+            <>계정이 없나요? <span className="text-[#3182f6] font-semibold">회원가입</span></>
           )}
         </button>
       </div>

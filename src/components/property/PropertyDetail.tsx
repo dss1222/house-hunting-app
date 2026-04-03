@@ -38,11 +38,10 @@ export function PropertyDetail() {
 
   if (loading) {
     return (
-      <div className="px-5 pt-4 space-y-4">
-        <div className="h-6 w-24 skeleton" />
+      <div className="px-5 pt-6 space-y-4">
         <div className="h-8 w-48 skeleton" />
         <div className="h-5 w-64 skeleton" />
-        <div className="h-7 w-40 skeleton" />
+        <div className="h-10 w-40 skeleton" />
       </div>
     )
   }
@@ -50,105 +49,110 @@ export function PropertyDetail() {
   if (!property) {
     return (
       <div className="flex flex-col items-center justify-center px-5 min-h-[60vh] animate-fade-in">
-        <p className="text-[40px] mb-4">😢</p>
-        <p className="text-[15px] text-text-secondary">매물을 찾을 수 없습니다.</p>
+        <p className="text-[48px] mb-4">😢</p>
+        <p className="text-[15px] text-text-secondary">매물을 찾을 수 없습니다</p>
       </div>
     )
   }
 
   const priceDisplay = () => {
-    if (property.price_type === '월세') return `${property.deposit ?? 0}/${property.monthly_rent ?? 0}만원`
-    if (property.price_type === '전세') return `${property.deposit ?? property.price ?? 0}만원`
-    return `${property.price ?? 0}만원`
+    if (property.price_type === '월세') return `${property.deposit ?? 0}/${property.monthly_rent ?? 0}`
+    if (property.price_type === '전세') return `${property.deposit ?? property.price ?? 0}`
+    return `${property.price ?? 0}`
   }
 
+  const infoRows: { label: string; value: string }[] = []
+  if (property.size_pyeong) infoRows.push({ label: '평수', value: `${property.size_pyeong}평` })
+  if (property.floor) infoRows.push({ label: '층수', value: `${property.floor}층` })
+  if (property.rooms) infoRows.push({ label: '방 수', value: `${property.rooms}개` })
+  if (property.bathrooms) infoRows.push({ label: '화장실', value: `${property.bathrooms}개` })
+  infoRows.push({ label: '주차', value: property.parking ? '가능' : '불가' })
+  if (property.maintenance_fee) infoRows.push({ label: '관리비', value: `월 ${property.maintenance_fee}만원` })
+  if (property.direction) infoRows.push({ label: '방향', value: property.direction })
+  if (property.move_in_date) infoRows.push({ label: '입주 가능일', value: property.move_in_date })
+
   return (
-    <div className="animate-fade-in">
-      {/* Top nav */}
-      <div className="flex items-center justify-between px-2 py-1">
-        <button onClick={() => navigate(-1)} className="min-h-[44px] min-w-[44px] flex items-center justify-center text-text active:text-text-secondary transition-colors">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    <div className="animate-fade-in bg-white">
+      {/* Nav */}
+      <div className="flex items-center justify-between px-2 h-[48px]">
+        <button onClick={() => navigate(-1)} className="w-[44px] h-[44px] flex items-center justify-center active:opacity-50 transition-opacity">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#191f28" strokeWidth="2" strokeLinecap="round"><path d="M15 18l-6-6 6-6"/></svg>
         </button>
         <div className="flex">
-          <button onClick={() => navigate(`/property/${id}/edit`)} className="min-h-[44px] px-3 text-[14px] text-primary font-semibold active:opacity-60 transition-opacity">
-            수정
-          </button>
-          <button onClick={handleDelete} disabled={deleting} className="min-h-[44px] px-3 text-[14px] text-danger font-semibold active:opacity-60 transition-opacity">
+          <button onClick={() => navigate(`/property/${id}/edit`)} className="h-[44px] px-4 text-[14px] text-[#3182f6] font-semibold active:opacity-50 transition-opacity">수정</button>
+          <button onClick={handleDelete} disabled={deleting} className="h-[44px] px-4 text-[14px] text-[#f04452] font-semibold active:opacity-50 transition-opacity">
             {deleting ? '삭제 중...' : '삭제'}
           </button>
         </div>
       </div>
 
-      {/* Main info */}
-      <div className="px-5 pb-5">
-        <h2 className="text-[22px] font-bold text-text mb-1 leading-tight">{property.name}</h2>
-        <p className="text-[14px] text-text-secondary mb-4">{property.address}</p>
+      {/* Hero section - name, address, price */}
+      <div className="px-5 pt-2 pb-7">
+        <h2 className="text-[24px] font-bold text-text leading-tight mb-1">{property.name}</h2>
+        <p className="text-[14px] text-text-secondary mb-6">{property.address}</p>
 
-        <div className="flex items-baseline gap-2 mb-3">
-          <span className="text-[13px] font-semibold text-primary">{property.price_type}</span>
-          <span className="text-[24px] font-bold text-text tracking-tight">{priceDisplay()}</span>
+        {/* Price - hero sized */}
+        <div className="mb-1">
+          <span className="text-[13px] font-semibold text-[#3182f6]">{property.price_type}</span>
+        </div>
+        <div className="flex items-baseline gap-1">
+          <span className="text-[32px] font-bold text-text tracking-tight leading-none">{priceDisplay()}</span>
+          <span className="text-[16px] text-text-secondary font-medium">만원</span>
         </div>
 
-        <RatingStars value={property.rating} size="md" />
+        {/* Rating */}
+        <div className="mt-5">
+          <RatingStars value={property.rating} size="md" />
+        </div>
 
+        {/* Tags */}
         {property.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 mt-4">
+          <div className="flex flex-wrap gap-2 mt-5">
             {property.tags.map((tag) => (
-              <span key={tag} className="text-[12px] px-2.5 py-1 bg-primary-light text-primary font-medium rounded-md">{tag}</span>
+              <span key={tag} className="text-[13px] text-[#3182f6] bg-[#e8f3ff] px-3 py-1.5 rounded-lg font-medium">{tag}</span>
             ))}
           </div>
         )}
       </div>
 
       {/* Divider */}
-      <div className="h-2 bg-[#f2f4f6]" />
+      <div className="toss-section-divider" />
 
       {/* Detail info */}
-      <div className="px-5 py-5">
-        <h3 className="text-[16px] font-bold text-text mb-4">상세 정보</h3>
-        <div className="space-y-0">
-          {property.size_pyeong && <InfoRow label="평수" value={`${property.size_pyeong}평`} />}
-          {property.floor && <InfoRow label="층수" value={`${property.floor}층`} />}
-          {property.rooms && <InfoRow label="방" value={`${property.rooms}개`} />}
-          {property.bathrooms && <InfoRow label="화장실" value={`${property.bathrooms}개`} />}
-          <InfoRow label="주차" value={property.parking ? '가능' : '불가'} highlight={property.parking} />
-          {property.maintenance_fee && <InfoRow label="관리비" value={`${property.maintenance_fee}만원`} />}
-          {property.direction && <InfoRow label="방향" value={property.direction} />}
-          {property.move_in_date && <InfoRow label="입주 가능일" value={property.move_in_date} />}
+      <div className="px-5 py-6">
+        <h3 className="text-[18px] font-bold text-text mb-2">상세 정보</h3>
+        <div>
+          {infoRows.map((row) => (
+            <div key={row.label} className="flex items-center justify-between py-[14px] border-b border-[#f2f4f6] last:border-0">
+              <span className="text-[15px] text-text-secondary">{row.label}</span>
+              <span className={`text-[15px] font-medium ${row.label === '주차' && row.value === '가능' ? 'text-[#3182f6]' : 'text-text'}`}>{row.value}</span>
+            </div>
+          ))}
         </div>
       </div>
 
       {/* Memo */}
       {property.memo && (
         <>
-          <div className="h-2 bg-[#f2f4f6]" />
-          <div className="px-5 py-5">
-            <h3 className="text-[16px] font-bold text-text mb-3">메모</h3>
-            <p className="text-[14px] text-text-secondary leading-relaxed whitespace-pre-wrap">{property.memo}</p>
+          <div className="toss-section-divider" />
+          <div className="px-5 py-6">
+            <h3 className="text-[18px] font-bold text-text mb-3">메모</h3>
+            <p className="text-[15px] text-text-secondary leading-[1.65] whitespace-pre-wrap">{property.memo}</p>
           </div>
         </>
       )}
 
       {/* Photos */}
-      <div className="h-2 bg-[#f2f4f6]" />
-      <div className="px-5 py-5">
+      <div className="toss-section-divider" />
+      <div className="px-5 py-6">
         <PhotoUploader photos={photos} uploading={uploading} onUpload={uploadPhoto} onDelete={deletePhoto} />
       </div>
 
       {/* Reviews */}
-      <div className="h-2 bg-[#f2f4f6]" />
-      <div className="px-5 py-5">
+      <div className="toss-section-divider" />
+      <div className="px-5 py-6">
         <ReviewSection reviews={reviews} onSubmit={upsertReview} />
       </div>
-    </div>
-  )
-}
-
-function InfoRow({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
-  return (
-    <div className="flex items-center justify-between py-3.5 border-b border-[#f2f4f6] last:border-0">
-      <span className="text-[14px] text-text-secondary">{label}</span>
-      <span className={`text-[14px] font-medium ${highlight ? 'text-primary' : 'text-text'}`}>{value}</span>
     </div>
   )
 }

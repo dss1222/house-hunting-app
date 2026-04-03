@@ -17,7 +17,7 @@ export function RatingStars({ value, onChange, size = 'md' }: RatingStarsProps) 
             type="button"
             disabled={!onChange}
             onClick={() => onChange?.(star === value ? 0 : star)}
-            className={`${onChange ? 'min-w-[44px] min-h-[44px]' : size === 'sm' ? 'min-w-[20px] min-h-[20px]' : 'min-w-[30px] min-h-[30px]'} flex items-center justify-center ${
+            className={`${onChange ? 'min-w-[44px] min-h-[44px]' : size === 'sm' ? 'min-w-[20px] min-h-[20px]' : 'min-w-[28px] min-h-[28px]'} flex items-center justify-center ${
               onChange ? 'cursor-pointer active:scale-110 transition-transform' : 'cursor-default'
             }`}
           >

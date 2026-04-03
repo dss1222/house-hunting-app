@@ -155,92 +155,104 @@
   "hotPaths": [
     {
       "path": "src\\components\\property\\PropertyDetail.tsx",
-      "accessCount": 7,
-      "lastAccessed": 1775226005499,
-      "type": "file"
-    },
-    {
-      "path": "src\\components\\property\\PropertyCard.tsx",
-      "accessCount": 6,
-      "lastAccessed": 1775226005250,
-      "type": "file"
-    },
-    {
-      "path": "src\\components\\map\\MapView.tsx",
-      "accessCount": 6,
-      "lastAccessed": 1775226008320,
-      "type": "file"
-    },
-    {
-      "path": "src\\components\\compare\\CompareView.tsx",
-      "accessCount": 6,
-      "lastAccessed": 1775226023365,
-      "type": "file"
-    },
-    {
-      "path": "src\\components\\list\\ListView.tsx",
-      "accessCount": 6,
-      "lastAccessed": 1775226023616,
-      "type": "file"
-    },
-    {
-      "path": "src\\components\\layout\\BottomTabBar.tsx",
-      "accessCount": 6,
-      "lastAccessed": 1775226023856,
-      "type": "file"
-    },
-    {
-      "path": "src\\styles\\globals.css",
-      "accessCount": 5,
-      "lastAccessed": 1775225831698,
-      "type": "file"
-    },
-    {
-      "path": "src\\components\\auth\\LoginPage.tsx",
-      "accessCount": 5,
-      "lastAccessed": 1775225852710,
+      "accessCount": 8,
+      "lastAccessed": 1775226301224,
       "type": "file"
     },
     {
       "path": "src\\components\\layout\\MobileLayout.tsx",
-      "accessCount": 5,
-      "lastAccessed": 1775225857077,
+      "accessCount": 7,
+      "lastAccessed": 1775226217634,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\layout\\BottomTabBar.tsx",
+      "accessCount": 7,
+      "lastAccessed": 1775226228040,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\auth\\LoginPage.tsx",
+      "accessCount": 7,
+      "lastAccessed": 1775226249949,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\list\\ListView.tsx",
+      "accessCount": 7,
+      "lastAccessed": 1775226259563,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\property\\PropertyCard.tsx",
+      "accessCount": 7,
+      "lastAccessed": 1775226270893,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\compare\\CompareView.tsx",
+      "accessCount": 7,
+      "lastAccessed": 1775226319894,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\map\\MapView.tsx",
+      "accessCount": 7,
+      "lastAccessed": 1775226336890,
       "type": "file"
     },
     {
       "path": "src\\components\\property\\RatingStars.tsx",
-      "accessCount": 5,
-      "lastAccessed": 1775225960408,
+      "accessCount": 7,
+      "lastAccessed": 1775226347355,
       "type": "file"
     },
     {
       "path": "src\\components\\property\\TagSelector.tsx",
-      "accessCount": 5,
-      "lastAccessed": 1775225964456,
+      "accessCount": 7,
+      "lastAccessed": 1775226351236,
       "type": "file"
     },
     {
       "path": "src\\components\\property\\PhotoUploader.tsx",
-      "accessCount": 5,
-      "lastAccessed": 1775225973836,
+      "accessCount": 7,
+      "lastAccessed": 1775226361134,
       "type": "file"
     },
     {
       "path": "src\\components\\property\\ReviewSection.tsx",
-      "accessCount": 5,
-      "lastAccessed": 1775225985900,
+      "accessCount": 7,
+      "lastAccessed": 1775226373659,
+      "type": "file"
+    },
+    {
+      "path": "src\\styles\\globals.css",
+      "accessCount": 6,
+      "lastAccessed": 1775226201042,
+      "type": "file"
+    },
+    {
+      "path": "src\\App.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1775226210881,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\layout\\ErrorBoundary.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1775226378212,
+      "type": "file"
+    },
+    {
+      "path": "src\\main.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1775226156902,
       "type": "file"
     },
     {
       "path": "package.json",
       "accessCount": 2,
       "lastAccessed": 1775226000128,
-      "type": "file"
-    },
-    {
-      "path": "src\\App.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1775226004529,
       "type": "file"
     },
     {
@@ -304,51 +316,51 @@
       "type": "file"
     },
     {
+      "path": "src\\contexts\\AuthContext.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1775226034960,
+      "type": "file"
+    },
+    {
+      "path": "src\\hooks\\useAuth.ts",
+      "accessCount": 2,
+      "lastAccessed": 1775226039921,
+      "type": "file"
+    },
+    {
+      "path": "src\\hooks\\usePhotos.ts",
+      "accessCount": 2,
+      "lastAccessed": 1775226040165,
+      "type": "file"
+    },
+    {
+      "path": "src\\hooks\\useReviews.ts",
+      "accessCount": 2,
+      "lastAccessed": 1775226040444,
+      "type": "file"
+    },
+    {
+      "path": "index.html",
+      "accessCount": 2,
+      "lastAccessed": 1775226180773,
+      "type": "file"
+    },
+    {
       "path": "tsconfig.json",
       "accessCount": 1,
       "lastAccessed": 1775224823889,
       "type": "file"
     },
     {
-      "path": "src\\main.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1775224827053,
-      "type": "file"
-    },
-    {
-      "path": "src\\hooks\\useAuth.ts",
-      "accessCount": 1,
-      "lastAccessed": 1775224828316,
-      "type": "file"
-    },
-    {
-      "path": "src\\contexts\\AuthContext.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1775224828334,
-      "type": "file"
-    },
-    {
-      "path": "src\\components\\layout\\ErrorBoundary.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1775224831305,
-      "type": "file"
-    },
-    {
-      "path": "src\\hooks\\usePhotos.ts",
-      "accessCount": 1,
-      "lastAccessed": 1775224838981,
-      "type": "file"
-    },
-    {
-      "path": "src\\hooks\\useReviews.ts",
-      "accessCount": 1,
-      "lastAccessed": 1775224839210,
-      "type": "file"
-    },
-    {
       "path": ".env.example",
       "accessCount": 1,
       "lastAccessed": 1775226026708,
+      "type": "file"
+    },
+    {
+      "path": "vercel.json",
+      "accessCount": 1,
+      "lastAccessed": 1775226051196,
       "type": "file"
     }
   ],

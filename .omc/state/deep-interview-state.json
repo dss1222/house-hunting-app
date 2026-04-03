@@ -1,0 +1,18 @@
+{
+  "active": true,
+  "current_phase": "interview",
+  "interview_id": "di-naver-directions-001",
+  "type": "brownfield",
+  "initial_idea": "매물 등록 시 자동으로 네이버 지도 가는길(길찾기)을 여의도동 10, 서울 강남구 논현로72길 13 목적지로 보여주기",
+  "rounds": [],
+  "current_ambiguity": 1,
+  "threshold": 0.2,
+  "challenge_modes_used": [],
+  "ontology_snapshots": [],
+  "_meta": {
+    "mode": "deep-interview",
+    "sessionId": null,
+    "updatedAt": "2026-04-03T14:22:20.005Z",
+    "updatedBy": "state_write_tool"
+  }
+}
