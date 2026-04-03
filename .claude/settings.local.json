@@ -4,7 +4,11 @@
       "Bash(npx tsc:*)",
       "Bash(npm run:*)",
       "Bash(xargs ls:*)",
-      "mcp__plugin_oh-my-claudecode_t__state_write"
+      "mcp__plugin_oh-my-claudecode_t__state_write",
+      "WebFetch(domain:guide.ncloud-docs.com)",
+      "WebFetch(domain:map.naver.com)",
+      "WebFetch(domain:en.wikipedia.org)",
+      "WebFetch(domain:developers.naver.com)"
     ]
   }
 }

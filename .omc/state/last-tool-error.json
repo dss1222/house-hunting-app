@@ -1,0 +1,7 @@
+{
+  "tool_name": "WebFetch",
+  "tool_input_preview": "{\"url\":\"https://developers.naver.com/docs/utils/openmap/\",\"prompt\":\"What is the URL format for opening Naver Maps directions? Show any URL schemes for directions/navigation with start and end points.\"...",
+  "error": "Claude Code is unable to fetch from developers.naver.com",
+  "timestamp": "2026-04-03T14:35:56.950Z",
+  "retry_count": 2
+}

@@ -14,12 +14,12 @@ export function PropertyForm() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const { createProperty, updateProperty } = useProperties()
-  const { importFromUrl, importing, error: importError } = useNaverImport()
+  const { parseInput, importing, error: importError } = useNaverImport()
   const [form, setForm] = useState(EMPTY_PROPERTY_FORM)
   const [saving, setSaving] = useState(false)
   const [showDetail, setShowDetail] = useState(false)
   const [showRating, setShowRating] = useState(false)
-  const [naverUrl, setNaverUrl] = useState('')
+  const [pasteText, setPasteText] = useState('')
   const [showImport, setShowImport] = useState(true)
   const isEdit = !!id
 
@@ -96,54 +96,53 @@ export function PropertyForm() {
         </button>
       </div>
 
-      {/* 네이버 부동산 링크로 자동 입력 */}
+      {/* 네이버 부동산 붙여넣기 */}
       {!isEdit && showImport && (
         <section className="bg-primary-light rounded-xl p-4 space-y-2">
-          <h3 className="text-sm font-semibold text-primary">네이버 부동산 링크로 자동 입력</h3>
-          <div className="flex gap-2">
-            <input
-              placeholder="링크 붙여넣기"
-              value={naverUrl}
-              onChange={(e) => setNaverUrl(e.target.value)}
-              className="flex-1 px-3 py-2 border border-border rounded-lg text-sm min-h-[44px] bg-white"
-            />
-            <button
-              type="button"
-              disabled={importing || !naverUrl.trim()}
-              onClick={async () => {
-                const data = await importFromUrl(naverUrl.trim())
-                if (data) {
-                  setForm((prev) => ({
-                    ...prev,
-                    name: data.name ?? prev.name,
-                    address: data.address ?? prev.address,
-                    price_type: data.price_type ?? prev.price_type,
-                    price: data.price ?? prev.price,
-                    monthly_rent: data.monthly_rent ?? prev.monthly_rent,
-                    deposit: data.deposit ?? prev.deposit,
-                    size_pyeong: data.size_pyeong ?? prev.size_pyeong,
-                    floor: data.floor ?? prev.floor,
-                    rooms: data.rooms ?? prev.rooms,
-                    bathrooms: data.bathrooms ?? prev.bathrooms,
-                    parking: data.parking ?? prev.parking,
-                    maintenance_fee: data.maintenance_fee ?? prev.maintenance_fee,
-                    direction: data.direction ?? prev.direction,
-                    latitude: data.latitude ?? prev.latitude,
-                    longitude: data.longitude ?? prev.longitude,
-                    tags: data.tags && data.tags.length > 0 ? data.tags : prev.tags,
-                    memo: data.memo ?? prev.memo,
-                  }))
-                  setShowImport(false)
-                  setShowDetail(true)
-                }
-              }}
-              className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium min-h-[44px] disabled:opacity-50 whitespace-nowrap"
-            >
-              {importing ? '가져오는 중...' : '가져오기'}
-            </button>
-          </div>
+          <h3 className="text-sm font-semibold text-primary">네이버 부동산 자동 입력</h3>
+          <p className="text-xs text-text-secondary leading-relaxed">
+            네이버 부동산 매물 페이지에서 정보를 복사해서 붙여넣으세요.<br/>
+            가격, 평수, 층수 등을 자동으로 인식합니다.
+          </p>
+          <textarea
+            placeholder={"예시:\n래미안 ○○아파트\n서울시 강남구 ○○동\n전세 3억 5,000만원\n전용 84㎡ · 10층 · 방3 · 욕실2 · 남향"}
+            value={pasteText}
+            onChange={(e) => setPasteText(e.target.value)}
+            rows={4}
+            className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-white resize-none"
+          />
+          <button
+            type="button"
+            disabled={importing || !pasteText.trim()}
+            onClick={() => {
+              const data = parseInput(pasteText.trim())
+              if (data) {
+                setForm((prev) => ({
+                  ...prev,
+                  name: data.name ?? prev.name,
+                  address: data.address ?? prev.address,
+                  price_type: data.price_type ?? prev.price_type,
+                  price: data.price ?? prev.price,
+                  monthly_rent: data.monthly_rent ?? prev.monthly_rent,
+                  deposit: data.deposit ?? prev.deposit,
+                  size_pyeong: data.size_pyeong ?? prev.size_pyeong,
+                  floor: data.floor ?? prev.floor,
+                  rooms: data.rooms ?? prev.rooms,
+                  bathrooms: data.bathrooms ?? prev.bathrooms,
+                  parking: data.parking ?? prev.parking,
+                  maintenance_fee: data.maintenance_fee ?? prev.maintenance_fee,
+                  direction: data.direction ?? prev.direction,
+                  memo: data.memo ?? prev.memo,
+                }))
+                setShowImport(false)
+                setShowDetail(true)
+              }
+            }}
+            className="w-full py-2.5 bg-primary text-white rounded-lg text-sm font-medium min-h-[44px] disabled:opacity-50"
+          >
+            자동 입력하기
+          </button>
           {importError && <p className="text-danger text-xs mt-1">{importError}</p>}
-          <p className="text-xs text-text-secondary">네이버 부동산 공유 링크를 붙여넣으세요</p>
         </section>
       )}
 

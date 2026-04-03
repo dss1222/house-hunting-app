@@ -155,8 +155,8 @@
   "hotPaths": [
     {
       "path": "src\\components\\property\\PropertyDetail.tsx",
-      "accessCount": 8,
-      "lastAccessed": 1775226301224,
+      "accessCount": 10,
+      "lastAccessed": 1775226885087,
       "type": "file"
     },
     {
@@ -244,6 +244,18 @@
       "type": "file"
     },
     {
+      "path": "src\\lib\\constants.ts",
+      "accessCount": 4,
+      "lastAccessed": 1775226891295,
+      "type": "file"
+    },
+    {
+      "path": "src\\types\\index.ts",
+      "accessCount": 4,
+      "lastAccessed": 1775226891440,
+      "type": "file"
+    },
+    {
       "path": "src\\main.tsx",
       "accessCount": 3,
       "lastAccessed": 1775226156902,
@@ -253,12 +265,6 @@
       "path": "package.json",
       "accessCount": 2,
       "lastAccessed": 1775226000128,
-      "type": "file"
-    },
-    {
-      "path": "src\\types\\index.ts",
-      "accessCount": 2,
-      "lastAccessed": 1775226004807,
       "type": "file"
     },
     {
@@ -283,12 +289,6 @@
       "path": "src\\hooks\\useProperties.ts",
       "accessCount": 2,
       "lastAccessed": 1775226008524,
-      "type": "file"
-    },
-    {
-      "path": "src\\lib\\constants.ts",
-      "accessCount": 2,
-      "lastAccessed": 1775226008733,
       "type": "file"
     },
     {
@@ -362,6 +362,18 @@
       "accessCount": 1,
       "lastAccessed": 1775226051196,
       "type": "file"
+    },
+    {
+      "path": "",
+      "accessCount": 1,
+      "lastAccessed": 1775226885520,
+      "type": "directory"
+    },
+    {
+      "path": "src",
+      "accessCount": 1,
+      "lastAccessed": 1775226886710,
+      "type": "directory"
     }
   ],
   "userDirectives": []
