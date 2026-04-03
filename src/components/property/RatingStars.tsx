@@ -5,7 +5,7 @@ interface RatingStarsProps {
 }
 
 export function RatingStars({ value, onChange, size = 'md' }: RatingStarsProps) {
-  const s = size === 'sm' ? 16 : 22
+  const s = size === 'sm' ? 16 : 24
 
   return (
     <div className="flex gap-0.5">
@@ -17,11 +17,11 @@ export function RatingStars({ value, onChange, size = 'md' }: RatingStarsProps) 
             type="button"
             disabled={!onChange}
             onClick={() => onChange?.(star === value ? 0 : star)}
-            className={`${onChange ? 'min-w-[44px] min-h-[44px]' : size === 'sm' ? 'min-w-[20px] min-h-[20px]' : 'min-w-[28px] min-h-[28px]'} flex items-center justify-center ${
-              onChange ? 'cursor-pointer active:scale-125 transition-transform' : 'cursor-default'
+            className={`${onChange ? 'min-w-[44px] min-h-[44px]' : size === 'sm' ? 'min-w-[20px] min-h-[20px]' : 'min-w-[30px] min-h-[30px]'} flex items-center justify-center ${
+              onChange ? 'cursor-pointer active:scale-110 transition-transform' : 'cursor-default'
             }`}
           >
-            <svg width={s} height={s} viewBox="0 0 24 24" fill={filled ? '#ffc233' : 'none'} stroke="#ffc233" strokeWidth="2">
+            <svg width={s} height={s} viewBox="0 0 24 24" fill={filled ? '#ffb800' : 'none'} stroke={filled ? '#ffb800' : '#d1d6db'} strokeWidth="1.5">
               <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
             </svg>
           </button>

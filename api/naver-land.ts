@@ -87,22 +87,24 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(429).json({ error: '네이버 요청 제한. 30초~1분 후 다시 시도해주세요.' })
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const i = info as any
     const property = {
-      name: info.articleName ?? info.complexName ?? info.articleTitle ?? '',
-      address: info.exposureAddress ?? info.address ?? info.roadAddress ?? '',
-      price_type: mapPriceType(info.tradeTypeName ?? info.tradeType ?? ''),
-      price: parseNum(info.dealPrice ?? info.price),
-      monthly_rent: parseNum(info.monthlyRent),
-      deposit: parseNum(info.deposit ?? info.warrantPrice),
-      size_pyeong: info.exclusiveArea ? Math.round(parseFloat(info.exclusiveArea) * 0.3025 * 10) / 10 : null,
-      floor: info.floor ? parseInt(info.floor) : info.floorInfo ? parseInt(info.floorInfo) : null,
-      rooms: info.roomCount ? parseInt(info.roomCount) : null,
-      bathrooms: info.bathroomCount ? parseInt(info.bathroomCount) : null,
-      parking: info.parkingCount ? parseInt(info.parkingCount) > 0 : false,
-      maintenance_fee: info.maintenanceFee ? Math.round(parseFloat(info.maintenanceFee)) : null,
-      direction: info.direction ?? null,
-      latitude: info.latitude ? parseFloat(info.latitude) : null,
-      longitude: info.longitude ? parseFloat(info.longitude) : null,
+      name: String(i.articleName ?? i.complexName ?? i.articleTitle ?? ''),
+      address: String(i.exposureAddress ?? i.address ?? i.roadAddress ?? ''),
+      price_type: mapPriceType(String(i.tradeTypeName ?? i.tradeType ?? '')),
+      price: parseNum(i.dealPrice ?? i.price),
+      monthly_rent: parseNum(i.monthlyRent),
+      deposit: parseNum(i.deposit ?? i.warrantPrice),
+      size_pyeong: i.exclusiveArea ? Math.round(parseFloat(String(i.exclusiveArea)) * 0.3025 * 10) / 10 : null,
+      floor: i.floor ? parseInt(String(i.floor)) : i.floorInfo ? parseInt(String(i.floorInfo)) : null,
+      rooms: i.roomCount ? parseInt(String(i.roomCount)) : null,
+      bathrooms: i.bathroomCount ? parseInt(String(i.bathroomCount)) : null,
+      parking: i.parkingCount ? parseInt(String(i.parkingCount)) > 0 : false,
+      maintenance_fee: i.maintenanceFee ? Math.round(parseFloat(String(i.maintenanceFee))) : null,
+      direction: i.direction ? String(i.direction) : null,
+      latitude: i.latitude ? parseFloat(String(i.latitude)) : null,
+      longitude: i.longitude ? parseFloat(String(i.longitude)) : null,
       tags: buildTags(info),
       memo: `네이버 부동산: https://fin.land.naver.com/articles/${articleId}`,
     }

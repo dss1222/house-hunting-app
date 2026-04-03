@@ -45,10 +45,10 @@ export function MapView() {
       const stars = '★'.repeat(Math.round(p.rating))
 
       const infoContent = `
-        <div style="padding:8px 12px;min-width:150px;font-size:13px;line-height:1.4;cursor:pointer" id="info-${p.id}">
-          <strong style="font-size:14px">${p.name}</strong><br/>
-          <span style="color:#2563eb;font-weight:bold">${p.price_type} ${priceText}만원</span><br/>
-          <span style="color:#facc15">${stars}</span>
+        <div style="padding:12px 16px;min-width:160px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;cursor:pointer;line-height:1.5" id="info-${p.id}">
+          <div style="font-size:15px;font-weight:700;color:#191f28;margin-bottom:2px">${p.name}</div>
+          <div style="font-size:13px;color:#3182f6;font-weight:700">${p.price_type} ${priceText}만원</div>
+          ${stars ? `<div style="font-size:12px;color:#ffb800;margin-top:2px">${stars}</div>` : ''}
         </div>
       `
 
@@ -75,12 +75,10 @@ export function MapView() {
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center p-8 text-center min-h-[60vh] animate-fade-in">
-        <div className="w-16 h-16 rounded-2xl bg-danger-light flex items-center justify-center mb-4">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="text-danger"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
-        </div>
-        <p className="text-sm text-text-secondary mb-4">지도를 불러올 수 없습니다</p>
-        <button onClick={() => window.location.reload()} className="px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-medium min-h-[44px] active:scale-[0.98] transition-transform">새로고침</button>
+      <div className="flex flex-col items-center justify-center px-5 text-center min-h-[60vh] animate-fade-in">
+        <p className="text-[40px] mb-4">😢</p>
+        <p className="text-[15px] text-text-secondary mb-6">지도를 불러올 수 없습니다</p>
+        <button onClick={() => window.location.reload()} className="px-6 py-3 bg-primary text-white rounded-2xl text-[14px] font-semibold min-h-[48px] active:bg-primary-dark transition-colors">새로고침</button>
       </div>
     )
   }
@@ -88,8 +86,8 @@ export function MapView() {
   if (!isReady || loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-3 animate-fade-in">
-        <div className="w-10 h-10 border-3 border-primary-light border-t-primary rounded-full animate-spin" />
-        <p className="text-sm text-text-tertiary">지도 로딩 중...</p>
+        <div className="w-8 h-8 border-2 border-[#f2f4f6] border-t-primary rounded-full animate-spin" />
+        <p className="text-[14px] text-text-tertiary">지도 로딩 중...</p>
       </div>
     )
   }
@@ -97,13 +95,12 @@ export function MapView() {
   const propsWithCoords = properties.filter((p) => p.latitude && p.longitude)
 
   return (
-    <div className="relative h-[calc(100dvh-120px)]">
-      <div ref={mapRef} className="w-full h-full rounded-none" />
+    <div className="relative h-[calc(100dvh-128px)]">
+      <div ref={mapRef} className="w-full h-full" />
       {propsWithCoords.length === 0 && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/5 pointer-events-none">
-          <div className="bg-card px-5 py-3 rounded-2xl shadow-[var(--shadow-float)] flex items-center gap-2">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="text-text-tertiary"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <p className="text-sm text-text-secondary">좌표가 등록된 매물이 없습니다</p>
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="bg-card px-5 py-3 rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.08)] flex items-center gap-2">
+            <p className="text-[14px] text-text-secondary">좌표가 등록된 매물이 없습니다</p>
           </div>
         </div>
       )}

@@ -155,8 +155,38 @@
   "hotPaths": [
     {
       "path": "src\\components\\property\\PropertyDetail.tsx",
+      "accessCount": 7,
+      "lastAccessed": 1775226005499,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\property\\PropertyCard.tsx",
       "accessCount": 6,
-      "lastAccessed": 1775225915071,
+      "lastAccessed": 1775226005250,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\map\\MapView.tsx",
+      "accessCount": 6,
+      "lastAccessed": 1775226008320,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\compare\\CompareView.tsx",
+      "accessCount": 6,
+      "lastAccessed": 1775226023365,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\list\\ListView.tsx",
+      "accessCount": 6,
+      "lastAccessed": 1775226023616,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\layout\\BottomTabBar.tsx",
+      "accessCount": 6,
+      "lastAccessed": 1775226023856,
       "type": "file"
     },
     {
@@ -178,75 +208,99 @@
       "type": "file"
     },
     {
-      "path": "src\\components\\layout\\BottomTabBar.tsx",
-      "accessCount": 5,
-      "lastAccessed": 1775225868411,
-      "type": "file"
-    },
-    {
-      "path": "src\\components\\property\\PropertyCard.tsx",
-      "accessCount": 5,
-      "lastAccessed": 1775225882806,
-      "type": "file"
-    },
-    {
-      "path": "src\\components\\list\\ListView.tsx",
-      "accessCount": 5,
-      "lastAccessed": 1775225892211,
-      "type": "file"
-    },
-    {
-      "path": "src\\components\\compare\\CompareView.tsx",
-      "accessCount": 4,
-      "lastAccessed": 1775225803898,
-      "type": "file"
-    },
-    {
       "path": "src\\components\\property\\RatingStars.tsx",
-      "accessCount": 4,
-      "lastAccessed": 1775225804936,
+      "accessCount": 5,
+      "lastAccessed": 1775225960408,
       "type": "file"
     },
     {
       "path": "src\\components\\property\\TagSelector.tsx",
-      "accessCount": 4,
-      "lastAccessed": 1775225805217,
+      "accessCount": 5,
+      "lastAccessed": 1775225964456,
       "type": "file"
     },
     {
       "path": "src\\components\\property\\PhotoUploader.tsx",
-      "accessCount": 4,
-      "lastAccessed": 1775225805811,
+      "accessCount": 5,
+      "lastAccessed": 1775225973836,
       "type": "file"
     },
     {
       "path": "src\\components\\property\\ReviewSection.tsx",
-      "accessCount": 4,
-      "lastAccessed": 1775225806260,
-      "type": "file"
-    },
-    {
-      "path": "src\\components\\map\\MapView.tsx",
-      "accessCount": 4,
-      "lastAccessed": 1775225806546,
+      "accessCount": 5,
+      "lastAccessed": 1775225985900,
       "type": "file"
     },
     {
       "path": "package.json",
-      "accessCount": 1,
-      "lastAccessed": 1775224818575,
+      "accessCount": 2,
+      "lastAccessed": 1775226000128,
       "type": "file"
     },
     {
-      "path": "vite.config.ts",
-      "accessCount": 1,
-      "lastAccessed": 1775224823187,
+      "path": "src\\App.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1775226004529,
       "type": "file"
     },
     {
       "path": "src\\types\\index.ts",
-      "accessCount": 1,
-      "lastAccessed": 1775224823650,
+      "accessCount": 2,
+      "lastAccessed": 1775226004807,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\property\\PropertyForm.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1775226005350,
+      "type": "file"
+    },
+    {
+      "path": "src\\hooks\\useNaverImport.ts",
+      "accessCount": 2,
+      "lastAccessed": 1775226005666,
+      "type": "file"
+    },
+    {
+      "path": "src\\hooks\\useKakaoMap.ts",
+      "accessCount": 2,
+      "lastAccessed": 1775226008150,
+      "type": "file"
+    },
+    {
+      "path": "src\\hooks\\useProperties.ts",
+      "accessCount": 2,
+      "lastAccessed": 1775226008524,
+      "type": "file"
+    },
+    {
+      "path": "src\\lib\\constants.ts",
+      "accessCount": 2,
+      "lastAccessed": 1775226008733,
+      "type": "file"
+    },
+    {
+      "path": "api\\naver-land.ts",
+      "accessCount": 2,
+      "lastAccessed": 1775226015188,
+      "type": "file"
+    },
+    {
+      "path": "src\\lib\\supabase.ts",
+      "accessCount": 2,
+      "lastAccessed": 1775226015427,
+      "type": "file"
+    },
+    {
+      "path": "vite.config.ts",
+      "accessCount": 2,
+      "lastAccessed": 1775226018008,
+      "type": "file"
+    },
+    {
+      "path": "src\\types\\kakao.d.ts",
+      "accessCount": 2,
+      "lastAccessed": 1775226026603,
       "type": "file"
     },
     {
@@ -259,24 +313,6 @@
       "path": "src\\main.tsx",
       "accessCount": 1,
       "lastAccessed": 1775224827053,
-      "type": "file"
-    },
-    {
-      "path": "src\\App.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1775224827299,
-      "type": "file"
-    },
-    {
-      "path": "src\\lib\\constants.ts",
-      "accessCount": 1,
-      "lastAccessed": 1775224827524,
-      "type": "file"
-    },
-    {
-      "path": "src\\lib\\supabase.ts",
-      "accessCount": 1,
-      "lastAccessed": 1775224827734,
       "type": "file"
     },
     {
@@ -298,18 +334,6 @@
       "type": "file"
     },
     {
-      "path": "src\\components\\property\\PropertyForm.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1775224834565,
-      "type": "file"
-    },
-    {
-      "path": "src\\hooks\\useProperties.ts",
-      "accessCount": 1,
-      "lastAccessed": 1775224838760,
-      "type": "file"
-    },
-    {
       "path": "src\\hooks\\usePhotos.ts",
       "accessCount": 1,
       "lastAccessed": 1775224838981,
@@ -322,27 +346,9 @@
       "type": "file"
     },
     {
-      "path": "src\\hooks\\useKakaoMap.ts",
+      "path": ".env.example",
       "accessCount": 1,
-      "lastAccessed": 1775224839351,
-      "type": "file"
-    },
-    {
-      "path": "src\\hooks\\useNaverImport.ts",
-      "accessCount": 1,
-      "lastAccessed": 1775224843517,
-      "type": "file"
-    },
-    {
-      "path": "api\\naver-land.ts",
-      "accessCount": 1,
-      "lastAccessed": 1775224843605,
-      "type": "file"
-    },
-    {
-      "path": "src\\types\\kakao.d.ts",
-      "accessCount": 1,
-      "lastAccessed": 1775224844551,
+      "lastAccessed": 1775226026708,
       "type": "file"
     }
   ],
