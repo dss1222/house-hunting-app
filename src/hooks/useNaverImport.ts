@@ -10,52 +10,88 @@ export function useNaverImport() {
     setError(null)
 
     try {
-      // 1. naver.me 단축 URL → 실제 URL로 변환
+      // 1. article ID 추출
       let articleId = ''
-      const articleMatch = inputUrl.match(/articles\/(\d+)/)
-      if (articleMatch) {
-        articleId = articleMatch[1]!
-      } else if (inputUrl.includes('naver.me')) {
-        // CORS 프록시로 리다이렉트 URL 확인
-        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(inputUrl)}`
-        const res = await fetchWithTimeout(proxyUrl, 30000)
-        const html = await res.text()
-        const idMatch = html.match(/articles\/(\d+)/)
-        if (idMatch) articleId = idMatch[1]!
+
+      // fin.land.naver.com/articles/12345 형태
+      const directMatch = inputUrl.match(/articles\/(\d+)/)
+      if (directMatch) {
+        articleId = directMatch[1]!
+      }
+
+      // naver.me/xxxx 단축 URL → article ID 추출
+      if (!articleId && inputUrl.includes('naver.me')) {
+        // 방법1: corsproxy.io
+        try {
+          const res = await fetch(`https://corsproxy.io/?url=${encodeURIComponent(inputUrl)}`, {
+            method: 'HEAD',
+            signal: AbortSignal.timeout(15000),
+          })
+          const finalUrl = res.url || res.headers.get('x-final-url') || ''
+          const m = finalUrl.match(/articles\/(\d+)/)
+          if (m) articleId = m[1]!
+        } catch { /* fallback below */ }
+
+        // 방법2: 직접 fetch (일부 브라우저에서 작동)
+        if (!articleId) {
+          try {
+            const res = await fetch(inputUrl, {
+              method: 'HEAD',
+              mode: 'no-cors',
+              redirect: 'follow',
+              signal: AbortSignal.timeout(10000),
+            })
+            const m = res.url.match(/articles\/(\d+)/)
+            if (m) articleId = m[1]!
+          } catch { /* ignore */ }
+        }
       }
 
       if (!articleId) {
-        setError('유효한 네이버 부동산 링크가 아닙니다')
+        setError('링크에서 매물 ID를 찾을 수 없습니다. fin.land.naver.com/articles/... 형태의 링크를 직접 사용해주세요.')
         return null
       }
 
-      // 2. 네이버 부동산 API 호출 (CORS 프록시 경유)
+      // 2. 네이버 부동산 API 호출
       const apiUrl = `https://fin.land.naver.com/front-api/v1/article/basicInfo?articleId=${articleId}`
-      const proxyApiUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`
 
-      const apiRes = await fetchWithTimeout(proxyApiUrl, 30000)
-      const data = await apiRes.json()
+      // 여러 프록시 시도
+      const proxies = [
+        `https://corsproxy.io/?url=${encodeURIComponent(apiUrl)}`,
+        `https://api.allorigins.win/get?url=${encodeURIComponent(apiUrl)}`,
+      ]
 
-      const info = data?.result ?? data
+      let data: Record<string, unknown> | null = null
 
-      if (!info || info.detailCode === 'TOO_MANY_REQUESTS') {
-        // API 실패시 HTML 페이지에서 파싱 시도
-        const htmlUrl = `https://fin.land.naver.com/articles/${articleId}`
-        const proxyHtmlUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(htmlUrl)}`
-        const htmlRes = await fetchWithTimeout(proxyHtmlUrl, 30000)
-        const htmlData = await htmlRes.json()
+      for (const proxyUrl of proxies) {
+        try {
+          const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(15000) })
+          if (!res.ok) continue
 
-        if (htmlData?.contents) {
-          const parsed = parseHtml(htmlData.contents, articleId)
-          if (parsed) return parsed
+          const raw = await res.json()
+          // allorigins는 { contents: "..." } 형태로 반환
+          if (raw.contents) {
+            data = JSON.parse(raw.contents)
+          } else {
+            data = raw
+          }
+
+          if (data && !('detailCode' in data && data.detailCode === 'TOO_MANY_REQUESTS')) {
+            break
+          }
+          data = null
+        } catch {
+          continue
         }
+      }
 
-        setError('네이버에서 데이터를 가져올 수 없습니다. 잠시 후 다시 시도해주세요.')
+      if (!data) {
+        setError('매물 정보를 가져올 수 없습니다. 잠시 후 다시 시도해주세요.')
         return null
       }
 
-      // 3. 우리 앱 형태로 변환
-      return convertToProperty(info, articleId)
+      const info = (data as Record<string, unknown>).result ?? data
+      return convertToProperty(info as Record<string, unknown>, articleId)
     } catch (e) {
       console.error('Import error:', e)
       setError('가져오기 실패. 다시 시도해주세요.')
@@ -68,17 +104,11 @@ export function useNaverImport() {
   return { importFromUrl, importing, error }
 }
 
-function fetchWithTimeout(url: string, ms: number): Promise<Response> {
-  const controller = new AbortController()
-  const timer = setTimeout(() => controller.abort(), ms)
-  return fetch(url, { signal: controller.signal }).finally(() => clearTimeout(timer))
-}
-
 function convertToProperty(info: Record<string, unknown>, articleId: string): Partial<PropertyFormData> {
   const result: Partial<PropertyFormData> = {}
 
-  result.name = (info.articleName ?? info.complexName ?? info.articleTitle ?? '') as string
-  result.address = (info.exposureAddress ?? info.address ?? info.roadAddress ?? '') as string
+  result.name = String(info.articleName ?? info.complexName ?? info.articleTitle ?? '')
+  result.address = String(info.exposureAddress ?? info.address ?? info.roadAddress ?? '')
 
   const tradeType = String(info.tradeTypeName ?? info.tradeType ?? '')
   if (tradeType.includes('매매') || tradeType === 'A1') {
@@ -93,9 +123,7 @@ function convertToProperty(info: Record<string, unknown>, articleId: string): Pa
     result.deposit = parseNum(info.deposit ?? info.warrantPrice ?? info.dealPrice ?? info.price)
   }
 
-  if (info.exclusiveArea) {
-    result.size_pyeong = Math.round(parseFloat(String(info.exclusiveArea)) * 0.3025 * 10) / 10
-  }
+  if (info.exclusiveArea) result.size_pyeong = Math.round(parseFloat(String(info.exclusiveArea)) * 0.3025 * 10) / 10
   if (info.floor || info.floorInfo) result.floor = parseInt(String(info.floor ?? info.floorInfo))
   if (info.roomCount) result.rooms = parseInt(String(info.roomCount))
   if (info.bathroomCount) result.bathrooms = parseInt(String(info.bathroomCount))
@@ -115,22 +143,7 @@ function convertToProperty(info: Record<string, unknown>, articleId: string): Pa
   }
 
   result.memo = `네이버 부동산: https://fin.land.naver.com/articles/${articleId}`
-
   return result
-}
-
-function parseHtml(html: string, articleId: string): Partial<PropertyFormData> | null {
-  try {
-    const nextDataMatch = html.match(/<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/)
-    if (nextDataMatch?.[1]) {
-      const nextData = JSON.parse(nextDataMatch[1])
-      const props = nextData?.props?.pageProps
-      if (props?.articleDetail || props?.basicInfo) {
-        return convertToProperty(props.articleDetail ?? props.basicInfo, articleId)
-      }
-    }
-  } catch { /* ignore */ }
-  return null
 }
 
 function parseNum(value: unknown): number | null {

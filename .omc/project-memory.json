@@ -155,8 +155,8 @@
   "hotPaths": [
     {
       "path": "src\\styles\\globals.css",
-      "accessCount": 2,
-      "lastAccessed": 1775224889100,
+      "accessCount": 3,
+      "lastAccessed": 1775225047117,
       "type": "file"
     },
     {
