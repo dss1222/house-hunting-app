@@ -24,15 +24,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       articleId = directMatch[1]!
     }
 
-    // naver.me 단축 URL → 리다이렉트 따라가서 article ID 추출
+    // naver.me 단축 URL → 첫 번째 리다이렉트만 따라가서 article ID 추출
     if (!articleId && inputUrl.includes('naver.me')) {
       try {
         const redirectRes = await fetch(inputUrl, {
-          redirect: 'follow',
+          redirect: 'manual',
           headers: { 'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)' },
           signal: AbortSignal.timeout(8000),
         })
-        const m = redirectRes.url.match(/articles\/(\d+)/)
+        const location = redirectRes.headers.get('location') ?? ''
+        console.log('Redirect location:', location)
+        const m = location.match(/articles\/(\d+)/)
         if (m) articleId = m[1]!
       } catch (e) {
         console.error('Redirect error:', e)
