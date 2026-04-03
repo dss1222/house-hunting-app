@@ -27,17 +27,23 @@ function AppRoutes() {
   }
 
   return (
-    <MobileLayout>
-      <Routes>
-        <Route path="/" element={<ListView />} />
-        <Route path="/compare" element={<CompareView />} />
-        <Route path="/map" element={<MapView />} />
-        <Route path="/property/new" element={<PropertyForm />} />
-        <Route path="/property/:id" element={<PropertyDetail />} />
-        <Route path="/property/:id/edit" element={<PropertyForm />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </MobileLayout>
+    <Routes>
+      {/* 폼/상세는 MobileLayout 밖 (탭바 없음, 전체 화면) */}
+      <Route path="/property/new" element={<PropertyForm />} />
+      <Route path="/property/:id" element={<PropertyDetail />} />
+      <Route path="/property/:id/edit" element={<PropertyForm />} />
+      {/* 메인 탭 화면은 MobileLayout 안 */}
+      <Route path="*" element={
+        <MobileLayout>
+          <Routes>
+            <Route path="/" element={<ListView />} />
+            <Route path="/compare" element={<CompareView />} />
+            <Route path="/map" element={<MapView />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </MobileLayout>
+      } />
+    </Routes>
   )
 }
 

@@ -35,7 +35,7 @@ export function ListView() {
         </p>
         <button
           onClick={() => navigate('/property/new')}
-          className="toss-btn h-[52px] px-8 bg-[#3182f6] text-white rounded-2xl text-[15px]"
+          className="h-[52px] px-8 bg-[#3182f6] text-white rounded-2xl text-[15px] font-semibold active:scale-[0.97] active:opacity-85 transition-all"
         >
           첫 매물 등록하기
         </button>
@@ -49,22 +49,13 @@ export function ListView() {
         <p className="text-[22px] font-bold text-white">{properties.length}개의 매물</p>
       </div>
 
-      <div className="stagger">
+      <div>
         {properties.map((property) => (
-          <div key={property.id} className="animate-fade-in border-b border-[#2c2c35] last:border-0">
+          <div key={property.id} className="animate-fade-in border-b border-[#222] last:border-0">
             <PropertyCard property={property} />
           </div>
         ))}
       </div>
-
-      <button
-        onClick={() => navigate('/property/new')}
-        className="toss-btn fixed right-5 bottom-[76px] w-[56px] h-[56px] bg-[#3182f6] text-white rounded-full z-30"
-        style={{ boxShadow: '0 4px 16px rgba(49,130,246,0.4)' }}
-        aria-label="매물 추가"
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
-      </button>
     </div>
   )
 }

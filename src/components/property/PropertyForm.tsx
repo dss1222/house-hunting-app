@@ -158,13 +158,13 @@ export function PropertyForm() {
     }
   }
 
-  const inputCls = 'w-full h-[52px] px-4 bg-[#2c2c35] rounded-2xl text-[15px] text-white placeholder:text-[#4e5968] border-2 border-transparent focus:border-[#3182f6] transition-all'
+  const inputCls = 'w-full h-[52px] px-4 bg-[#1a1a1a] rounded-2xl text-[15px] text-white placeholder:text-[#4e5968] border-2 border-[#222] focus:border-[#3182f6] transition-all'
   const labelCls = 'text-[13px] font-semibold text-[#8b95a1] block mb-2'
 
   return (
-    <div className="min-h-screen bg-[#17171c]">
+    <div className="min-h-screen bg-[#000000]">
       {/* Header */}
-      <div className="flex items-center justify-between px-2 h-[56px] border-b border-[#2c2c35] sticky top-0 bg-[#17171c] z-10">
+      <div className="flex items-center justify-between px-2 h-[56px] border-b border-[#222] sticky top-0 bg-[#000000] z-10">
         <button
           type="button"
           onClick={() => navigate(-1)}
@@ -178,7 +178,7 @@ export function PropertyForm() {
         <div className="w-[44px]" />
       </div>
 
-      <form onSubmit={handleSubmit} className="px-5 py-5 space-y-6 pb-[100px]">
+      <form onSubmit={handleSubmit} className="px-5 pt-8 pb-[140px]" style={{ display: 'flex', flexDirection: 'column', gap: 40 }}>
         {/* 매물명 */}
         <div>
           <label className={labelCls}>매물명 *</label>
@@ -191,10 +191,10 @@ export function PropertyForm() {
           />
         </div>
 
-        {/* 가격 유형 + 가격 */}
+        {/* 가격 유형 */}
         <div>
-          <label className={labelCls}>가격</label>
-          <div className="flex gap-2 mb-3">
+          <label className={labelCls}>거래 유형</label>
+          <div className="flex gap-2">
             {PRICE_TYPES.map((t) => (
               <button
                 key={t}
@@ -203,48 +203,76 @@ export function PropertyForm() {
                 className={`flex-1 h-[48px] rounded-2xl text-[14px] font-semibold transition-colors ${
                   form.price_type === t
                     ? 'bg-[#3182f6] text-white'
-                    : 'bg-[#2c2c35] text-[#8b95a1]'
+                    : 'bg-[#1a1a1a] border border-[#222] text-[#8b95a1]'
                 }`}
               >
                 {t}
               </button>
             ))}
           </div>
+        </div>
+
+        {/* 가격 입력 (별도 섹션) */}
+        <div>
           {form.price_type === '매매' && (
-            <input
-              type="number"
-              placeholder="매매가 (만원)"
-              value={form.price ?? ''}
-              onChange={(e) => set('price', numOrNull(e.target.value))}
-              className={inputCls}
-            />
+            <>
+              <label className={labelCls}>매매가 (억)</label>
+              <input
+                placeholder="예: 9.5 (=9억 5천)"
+                value={form.price ? (form.price / 10000).toString() : ''}
+                onChange={(e) => {
+                  const v = parseFloat(e.target.value)
+                  set('price', isNaN(v) ? null : Math.round(v * 10000))
+                }}
+                className={inputCls}
+                inputMode="decimal"
+              />
+              {form.price != null && <p className="text-[12px] text-[#3182f6] font-medium mt-2">{(form.price / 10000).toFixed(1)}억 ({form.price.toLocaleString()}만원)</p>}
+            </>
           )}
           {form.price_type === '전세' && (
-            <input
-              type="number"
-              placeholder="전세금 (만원)"
-              value={form.deposit ?? ''}
-              onChange={(e) => set('deposit', numOrNull(e.target.value))}
-              className={inputCls}
-            />
+            <>
+              <label className={labelCls}>전세금 (억)</label>
+              <input
+                placeholder="예: 3.5 (=3억 5천)"
+                value={form.deposit ? (form.deposit / 10000).toString() : ''}
+                onChange={(e) => {
+                  const v = parseFloat(e.target.value)
+                  set('deposit', isNaN(v) ? null : Math.round(v * 10000))
+                }}
+                className={inputCls}
+                inputMode="decimal"
+              />
+              {form.deposit != null && <p className="text-[12px] text-[#3182f6] font-medium mt-2">{(form.deposit / 10000).toFixed(1)}억 ({form.deposit.toLocaleString()}만원)</p>}
+            </>
           )}
           {form.price_type === '월세' && (
-            <div className="flex gap-2">
-              <input
-                type="number"
-                placeholder="보증금 (만원)"
-                value={form.deposit ?? ''}
-                onChange={(e) => set('deposit', numOrNull(e.target.value))}
-                className="flex-1 h-[52px] px-4 bg-[#2c2c35] rounded-2xl text-[15px] text-white placeholder:text-[#4e5968] border-2 border-transparent focus:border-[#3182f6] transition-all"
-              />
-              <input
-                type="number"
-                placeholder="월세 (만원)"
-                value={form.monthly_rent ?? ''}
-                onChange={(e) => set('monthly_rent', numOrNull(e.target.value))}
-                className="flex-1 h-[52px] px-4 bg-[#2c2c35] rounded-2xl text-[15px] text-white placeholder:text-[#4e5968] border-2 border-transparent focus:border-[#3182f6] transition-all"
-              />
-            </div>
+            <>
+              <label className={labelCls}>보증금 (억) / 월세 (만원)</label>
+              <div className="flex gap-3">
+                <div className="flex-1">
+                  <input
+                    placeholder="보증금 (억)"
+                    value={form.deposit ? (form.deposit / 10000).toString() : ''}
+                    onChange={(e) => {
+                      const v = parseFloat(e.target.value)
+                      set('deposit', isNaN(v) ? null : Math.round(v * 10000))
+                    }}
+                    className={inputCls}
+                    inputMode="decimal"
+                  />
+                </div>
+                <div className="flex-1">
+                  <input
+                    type="number"
+                    placeholder="월세 (만원)"
+                    value={form.monthly_rent ?? ''}
+                    onChange={(e) => set('monthly_rent', numOrNull(e.target.value))}
+                    className={inputCls}
+                  />
+                </div>
+              </div>
+            </>
           )}
         </div>
 
@@ -295,7 +323,7 @@ export function PropertyForm() {
                 className={`h-[44px] px-4 rounded-2xl text-[14px] font-medium transition-colors ${
                   form.direction === d
                     ? 'bg-[#3182f6] text-white'
-                    : 'bg-[#2c2c35] text-[#8b95a1]'
+                    : 'bg-[#1a1a1a] border border-[#222] text-[#8b95a1]'
                 }`}
               >
                 {d}
@@ -336,7 +364,7 @@ export function PropertyForm() {
             type="button"
             onClick={() => setFullOption(!fullOption)}
             className={`flex-1 flex items-center justify-between px-4 h-[52px] rounded-2xl transition-colors ${
-              fullOption ? 'bg-[#0d2e20] border border-[#00b76a]/30' : 'bg-[#2c2c35]'
+              fullOption ? 'bg-[#0d2e20] border border-[#00b76a]/30' : 'bg-[#1a1a1a] border border-[#222]'
             }`}
           >
             <span className={`text-[15px] font-semibold ${fullOption ? 'text-[#00b76a]' : 'text-[#8b95a1]'}`}>풀옵션</span>
@@ -348,7 +376,7 @@ export function PropertyForm() {
             type="button"
             onClick={() => set('parking', !form.parking)}
             className={`flex-1 flex items-center justify-between px-4 h-[52px] rounded-2xl transition-colors ${
-              form.parking ? 'bg-[#1a3a5c] border border-[#3182f6]/30' : 'bg-[#2c2c35]'
+              form.parking ? 'bg-[#1a3a5c] border border-[#3182f6]/30' : 'bg-[#1a1a1a] border border-[#222]'
             }`}
           >
             <span className={`text-[15px] font-semibold ${form.parking ? 'text-[#3182f6]' : 'text-[#8b95a1]'}`}>주차</span>
@@ -367,13 +395,13 @@ export function PropertyForm() {
               value={form.address}
               onChange={(e) => set('address', e.target.value)}
               onBlur={handleGeocode}
-              className="flex-1 h-[52px] px-4 bg-[#2c2c35] rounded-2xl text-[15px] text-white placeholder:text-[#4e5968] border-2 border-transparent focus:border-[#3182f6] transition-all"
+              className="flex-1 h-[52px] px-4 bg-[#1a1a1a] rounded-2xl text-[15px] text-white placeholder:text-[#4e5968] border-2 border-[#222] focus:border-[#3182f6] transition-all"
             />
             <button
               type="button"
               onClick={handleGeocode}
               disabled={geocoding || !form.address.trim()}
-              className="h-[52px] px-4 bg-[#2c2c35] text-[#8b95a1] rounded-2xl text-[14px] font-medium disabled:opacity-40 whitespace-nowrap active:opacity-60 transition-opacity"
+              className="h-[52px] px-4 bg-[#1a1a1a] border-2 border-[#222] text-[#8b95a1] rounded-2xl text-[14px] font-medium disabled:opacity-40 whitespace-nowrap active:opacity-60 transition-opacity"
             >
               {geocoding ? '검색중...' : '검색'}
             </button>
@@ -428,7 +456,7 @@ export function PropertyForm() {
             value={form.memo}
             onChange={(e) => set('memo', e.target.value)}
             rows={4}
-            className="w-full px-4 py-3 bg-[#2c2c35] rounded-2xl text-[15px] text-white placeholder:text-[#4e5968] border-2 border-transparent focus:border-[#3182f6] transition-all resize-none leading-relaxed"
+            className="w-full px-4 py-3 bg-[#1a1a1a] rounded-2xl text-[15px] text-white placeholder:text-[#4e5968] border-2 border-[#222] focus:border-[#3182f6] transition-all resize-none leading-relaxed"
           />
         </div>
 
@@ -440,12 +468,12 @@ export function PropertyForm() {
       </form>
 
       {/* 저장 버튼 - 하단 고정 */}
-      <div className="fixed bottom-0 left-0 right-0 px-5 pb-6 pt-3 bg-[#17171c] border-t border-[#2c2c35]">
+      <div className="fixed bottom-0 left-0 right-0 px-5 pt-3 bg-[#000000] border-t border-[#222] z-20" style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 16px)' }}>
         <button
           type="button"
           onClick={handleSubmit}
           disabled={saving}
-          className="toss-btn w-full h-[52px] bg-[#3182f6] text-white rounded-2xl text-[16px] font-bold disabled:bg-[#4e5968]"
+          className="w-full h-[52px] bg-[#3182f6] text-white rounded-2xl text-[16px] font-bold disabled:bg-[#4e5968] active:scale-[0.97] active:opacity-85 transition-all"
         >
           {saving ? '저장 중...' : isEdit ? '수정 완료' : '등록하기'}
         </button>

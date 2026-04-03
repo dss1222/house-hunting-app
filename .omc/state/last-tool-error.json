@@ -1,7 +1,0 @@
-{
-  "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"ls \\\"C:\\\\Users\\\\shin\\\\Projects\\\\house-hunting-app/CLAUDE.md\\\" 2>&1\",\"description\":\"Check if CLAUDE.md exists\"}",
-  "error": "Exit code 2\nls: cannot access 'C:\\Users\\shin\\Projects\\house-hunting-app/CLAUDE.md': No such file or directory",
-  "timestamp": "2026-04-03T23:09:46.967Z",
-  "retry_count": 1
-}

@@ -41,8 +41,8 @@ export function BottomTabBar() {
   }
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-[#17171c] z-50" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
-      <div className="h-px bg-[#2c2c35]" />
+    <nav className="fixed bottom-0 left-0 right-0 bg-[#000000] z-50" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
+      <div className="h-px bg-[#222]" />
       <div className="flex justify-around items-center h-[56px]">
         {tabs.map((tab) => {
           const active = isActive(tab.path)
