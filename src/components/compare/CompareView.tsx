@@ -98,7 +98,7 @@ export function CompareView() {
                     cls = p.parking ? 'text-[#3182f6] font-semibold' : 'text-[#4e5968]'
                   }
                   if (field.key === 'fullOption') {
-                    cls = p.tags.includes('풀옵션') ? 'text-[#00b894] font-semibold' : 'text-[#4e5968]'
+                    cls = p.tags.includes('풀옵션') ? 'text-[#00b76a] font-semibold' : 'text-[#4e5968]'
                   }
                   if (field.key === 'rating' && p.rating) {
                     cls = 'text-[#ffb800]'

@@ -61,7 +61,7 @@ export function PropertyCard({ property }: { property: Property }) {
             <span key={d} className="text-[12px] text-[#8b95a1] bg-[#2c2c35] px-2.5 py-1 rounded-md font-medium">{d}</span>
           ))}
           {isFullOption && (
-            <span className="text-[12px] text-[#00b894] bg-[#00b8941a] px-2.5 py-1 rounded-md font-semibold">풀옵션</span>
+            <span className="text-[12px] text-[#00b76a] bg-[#0d2e20] px-2.5 py-1 rounded-md font-semibold">풀옵션</span>
           )}
           {otherTags.slice(0, 2).map((tag) => (
             <span key={tag} className="text-[12px] text-[#3182f6] bg-[#1a3a5c] px-2.5 py-1 rounded-md font-medium">{tag}</span>
