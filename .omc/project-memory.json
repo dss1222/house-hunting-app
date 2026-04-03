@@ -154,81 +154,81 @@
   },
   "hotPaths": [
     {
+      "path": "src\\components\\property\\PropertyDetail.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1775225392640,
+      "type": "file"
+    },
+    {
       "path": "src\\styles\\globals.css",
       "accessCount": 3,
       "lastAccessed": 1775225047117,
       "type": "file"
     },
     {
+      "path": "src\\components\\auth\\LoginPage.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1775225094889,
+      "type": "file"
+    },
+    {
       "path": "src\\components\\layout\\MobileLayout.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1775224889410,
+      "accessCount": 3,
+      "lastAccessed": 1775225116974,
       "type": "file"
     },
     {
       "path": "src\\components\\layout\\BottomTabBar.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1775224890007,
-      "type": "file"
-    },
-    {
-      "path": "src\\components\\auth\\LoginPage.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1775224890157,
-      "type": "file"
-    },
-    {
-      "path": "src\\components\\list\\ListView.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1775224894599,
+      "accessCount": 3,
+      "lastAccessed": 1775225130499,
       "type": "file"
     },
     {
       "path": "src\\components\\property\\PropertyCard.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1775224895097,
+      "accessCount": 3,
+      "lastAccessed": 1775225160630,
       "type": "file"
     },
     {
-      "path": "src\\components\\property\\PropertyDetail.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1775224895562,
+      "path": "src\\components\\list\\ListView.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1775225179167,
       "type": "file"
     },
     {
       "path": "src\\components\\compare\\CompareView.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1775224896009,
+      "accessCount": 3,
+      "lastAccessed": 1775225282448,
       "type": "file"
     },
     {
       "path": "src\\components\\map\\MapView.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1775224896444,
-      "type": "file"
-    },
-    {
-      "path": "src\\components\\property\\PhotoUploader.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1775224896891,
-      "type": "file"
-    },
-    {
-      "path": "src\\components\\property\\ReviewSection.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1775224897351,
+      "accessCount": 3,
+      "lastAccessed": 1775225294531,
       "type": "file"
     },
     {
       "path": "src\\components\\property\\RatingStars.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1775224897796,
+      "accessCount": 3,
+      "lastAccessed": 1775225309651,
       "type": "file"
     },
     {
       "path": "src\\components\\property\\TagSelector.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1775224898199,
+      "accessCount": 3,
+      "lastAccessed": 1775225317678,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\property\\PhotoUploader.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1775225335773,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\property\\ReviewSection.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1775225356284,
       "type": "file"
     },
     {

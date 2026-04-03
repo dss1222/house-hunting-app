@@ -1,71 +1,90 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node'
+export const config = { maxDuration: 15 }
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-  const { url } = req.query
+export default async function handler(req: Request): Promise<Response> {
+  const url = new URL(req.url)
+  const inputUrl = url.searchParams.get('url')
 
-  if (!url || typeof url !== 'string') {
-    return res.status(400).json({ error: 'url 파라미터가 필요합니다' })
+  if (!inputUrl) {
+    return Response.json({ error: 'url 파라미터가 필요합니다' }, { status: 400 })
+  }
+
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET',
+    'Content-Type': 'application/json',
+  }
+
+  // CORS preflight
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers })
   }
 
   try {
-    // 1. naver.me 단축 URL이면 리다이렉트 따라가기
+    // 1. article ID 추출
     let articleId = ''
 
-    if (url.includes('naver.me')) {
-      const redirectRes = await fetch(url, { redirect: 'manual' })
-      const location = redirectRes.headers.get('location') ?? ''
-      const match = location.match(/articles\/(\d+)/)
-      articleId = match?.[1] ?? ''
-    } else {
-      const match = url.match(/articles\/(\d+)/)
-      articleId = match?.[1] ?? ''
+    // 직접 articles/ URL
+    const directMatch = inputUrl.match(/articles\/(\d+)/)
+    if (directMatch) {
+      articleId = directMatch[1]!
+    }
+
+    // naver.me 단축 URL → 리다이렉트 따라가기
+    if (!articleId && inputUrl.includes('naver.me')) {
+      const controller = new AbortController()
+      const timer = setTimeout(() => controller.abort(), 8000)
+      try {
+        const res = await fetch(inputUrl, {
+          redirect: 'follow',
+          signal: controller.signal,
+          headers: { 'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)' },
+        })
+        clearTimeout(timer)
+        const finalUrl = res.url
+        const m = finalUrl.match(/articles\/(\d+)/)
+        if (m) articleId = m[1]!
+      } catch {
+        clearTimeout(timer)
+      }
     }
 
     if (!articleId) {
-      return res.status(400).json({ error: '유효한 네이버 부동산 링크가 아닙니다' })
+      return Response.json({ error: '매물 링크에서 ID를 찾을 수 없습니다. 네이버 부동산 매물 상세 페이지의 공유 링크를 사용해주세요.' }, { status: 400, headers })
     }
 
     // 2. 네이버 부동산 API 호출
     const apiUrl = `https://fin.land.naver.com/front-api/v1/article/basicInfo?articleId=${articleId}`
+    const controller2 = new AbortController()
+    const timer2 = setTimeout(() => controller2.abort(), 8000)
+
     const apiRes = await fetch(apiUrl, {
+      signal: controller2.signal,
       headers: {
-        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
+        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15',
         'Referer': `https://fin.land.naver.com/articles/${articleId}`,
-        'Accept': 'application/json, text/plain, */*',
+        'Accept': 'application/json',
       },
     })
+    clearTimeout(timer2)
 
     if (!apiRes.ok) {
-      // API 실패시 HTML에서 파싱 시도
-      const htmlRes = await fetch(`https://fin.land.naver.com/articles/${articleId}`, {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15',
-        },
-      })
-      const html = await htmlRes.text()
-
-      // Next.js __NEXT_DATA__ 에서 데이터 추출 시도
-      const nextDataMatch = html.match(/<script id="__NEXT_DATA__"[^>]*>(.*?)<\/script>/)
-      if (nextDataMatch?.[1]) {
-        const nextData = JSON.parse(nextDataMatch[1])
-        return res.status(200).json({ source: 'html', data: nextData })
-      }
-
-      return res.status(502).json({ error: '네이버 부동산에서 데이터를 가져올 수 없습니다. 잠시 후 다시 시도해주세요.' })
+      return Response.json({ error: `네이버 API 오류 (${apiRes.status}). 잠시 후 다시 시도해주세요.` }, { status: 502, headers })
     }
 
     const data = await apiRes.json()
+    if (data?.detailCode === 'TOO_MANY_REQUESTS') {
+      return Response.json({ error: '네이버 요청 제한. 30초 후 다시 시도해주세요.' }, { status: 429, headers })
+    }
 
-    // 3. 우리 앱 형태로 변환
     const info = data?.result ?? data
 
     const property = {
       name: info.articleName ?? info.complexName ?? info.articleTitle ?? '',
       address: info.exposureAddress ?? info.address ?? info.roadAddress ?? '',
       price_type: mapPriceType(info.tradeTypeName ?? info.tradeType ?? ''),
-      price: parsePriceNumber(info.dealPrice ?? info.price ?? info.warrantPrice ?? null),
-      monthly_rent: parsePriceNumber(info.monthlyRent ?? null),
-      deposit: parsePriceNumber(info.deposit ?? info.warrantPrice ?? null),
+      price: parseNum(info.dealPrice ?? info.price),
+      monthly_rent: parseNum(info.monthlyRent),
+      deposit: parseNum(info.deposit ?? info.warrantPrice),
       size_pyeong: info.exclusiveArea ? Math.round(parseFloat(info.exclusiveArea) * 0.3025 * 10) / 10 : null,
       floor: info.floor ? parseInt(info.floor) : info.floorInfo ? parseInt(info.floorInfo) : null,
       rooms: info.roomCount ? parseInt(info.roomCount) : null,
@@ -73,46 +92,37 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       parking: info.parkingCount ? parseInt(info.parkingCount) > 0 : false,
       maintenance_fee: info.maintenanceFee ? Math.round(parseFloat(info.maintenanceFee)) : null,
       direction: info.direction ?? null,
-      move_in_date: info.moveInDate ?? info.moveInTypeName ?? null,
       latitude: info.latitude ? parseFloat(info.latitude) : null,
       longitude: info.longitude ? parseFloat(info.longitude) : null,
       tags: buildTags(info),
       memo: `네이버 부동산: https://fin.land.naver.com/articles/${articleId}`,
-      raw: info,
     }
 
-    return res.status(200).json({ source: 'api', property })
+    return Response.json({ property }, { status: 200, headers })
   } catch (err) {
-    console.error('Naver land fetch error:', err)
-    return res.status(500).json({ error: '서버 오류가 발생했습니다' })
+    const msg = err instanceof Error ? err.message : 'Unknown error'
+    return Response.json({ error: `서버 오류: ${msg}` }, { status: 500, headers })
   }
 }
 
-function mapPriceType(type: string): '매매' | '전세' | '월세' {
-  if (type.includes('매매') || type === 'A1') return '매매'
-  if (type.includes('전세') || type === 'B1') return '전세'
-  if (type.includes('월세') || type === 'B2') return '월세'
+function mapPriceType(t: string): string {
+  if (t.includes('매매') || t === 'A1') return '매매'
+  if (t.includes('월세') || t === 'B2') return '월세'
   return '전세'
 }
 
-function parsePriceNumber(value: string | number | null): number | null {
-  if (value === null || value === undefined || value === '') return null
-  const str = String(value).replace(/[^0-9]/g, '')
-  const num = parseInt(str)
-  return isNaN(num) ? null : num
+function parseNum(v: unknown): number | null {
+  if (v == null || v === '') return null
+  const n = parseInt(String(v).replace(/[^0-9]/g, ''))
+  return isNaN(n) ? null : n
 }
 
 function buildTags(info: Record<string, unknown>): string[] {
   const tags: string[] = []
   const year = info.approvalDate ?? info.useApprovalDate
   if (typeof year === 'string') {
-    const builtYear = parseInt(year.substring(0, 4))
-    if (!isNaN(builtYear)) {
-      tags.push(new Date().getFullYear() - builtYear <= 5 ? '신축' : '구축')
-    }
-  }
-  if (info.parkingCount && parseInt(String(info.parkingCount)) > 0) {
-    tags.push('주차가능')
+    const y = parseInt(year.substring(0, 4))
+    if (!isNaN(y)) tags.push(new Date().getFullYear() - y <= 5 ? '신축' : '구축')
   }
   return tags
 }

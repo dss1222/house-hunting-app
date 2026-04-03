@@ -23,12 +23,13 @@ export function TagSelector({ selected, onChange }: TagSelectorProps) {
             key={tag}
             type="button"
             onClick={() => toggle(tag)}
-            className={`px-3 py-1.5 rounded-full text-sm min-h-[36px] border transition-colors ${
+            className={`px-3.5 py-2 rounded-xl text-sm min-h-[36px] border transition-all active:scale-95 ${
               isSelected
-                ? 'bg-primary text-white border-primary'
-                : 'bg-white text-text-secondary border-border'
+                ? 'bg-gradient-to-r from-[#4f6cff] to-[#7c5cfc] text-white border-transparent shadow-[0_2px_8px_rgba(79,108,255,0.25)]'
+                : 'bg-card text-text-secondary border-border/70 shadow-[var(--shadow-soft)]'
             }`}
           >
+            {isSelected && <span className="mr-1">&#10003;</span>}
             {tag}
           </button>
         )
