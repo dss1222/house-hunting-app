@@ -2,20 +2,21 @@ import { useNavigate } from 'react-router-dom'
 import { useProperties } from '../../hooks/useProperties'
 import type { Property } from '../../types'
 
-const fields: { key: keyof Property | 'priceDisplay'; label: string; render?: (p: Property) => string }[] = [
+const fields: { key: keyof Property | 'priceDisplay' | 'fullOption'; label: string; render?: (p: Property) => string }[] = [
   { key: 'priceDisplay', label: '가격(만원)', render: (p) => {
     if (p.price_type === '월세') return `${p.deposit ?? 0}/${p.monthly_rent ?? 0}`
     if (p.price_type === '전세') return `${p.deposit ?? p.price ?? 0}`
     return `${p.price ?? 0}`
   }},
   { key: 'price_type', label: '유형' },
-  { key: 'size_pyeong', label: '평수', render: (p) => p.size_pyeong ? `${p.size_pyeong}평` : '-' },
+  { key: 'size_pyeong', label: '전용면적', render: (p) => p.size_pyeong ? `${p.size_pyeong}평` : '-' },
   { key: 'floor', label: '층수', render: (p) => p.floor ? `${p.floor}층` : '-' },
   { key: 'rooms', label: '방', render: (p) => p.rooms ? `${p.rooms}개` : '-' },
   { key: 'bathrooms', label: '화장실', render: (p) => p.bathrooms ? `${p.bathrooms}개` : '-' },
+  { key: 'direction', label: '방향', render: (p) => p.direction ?? '-' },
+  { key: 'fullOption', label: '풀옵션', render: (p) => p.tags.includes('풀옵션') ? 'O' : '-' },
   { key: 'parking', label: '주차', render: (p) => p.parking ? '가능' : '불가' },
   { key: 'maintenance_fee', label: '관리비', render: (p) => p.maintenance_fee ? `${p.maintenance_fee}만` : '-' },
-  { key: 'direction', label: '방향', render: (p) => p.direction ?? '-' },
   { key: 'rating', label: '별점', render: (p) => p.rating ? `${p.rating}점` : '-' },
 ]
 
@@ -95,6 +96,9 @@ export function CompareView() {
                   }
                   if (field.key === 'parking') {
                     cls = p.parking ? 'text-[#3182f6] font-semibold' : 'text-[#4e5968]'
+                  }
+                  if (field.key === 'fullOption') {
+                    cls = p.tags.includes('풀옵션') ? 'text-[#00b894] font-semibold' : 'text-[#4e5968]'
                   }
                   if (field.key === 'rating' && p.rating) {
                     cls = 'text-[#ffb800]'

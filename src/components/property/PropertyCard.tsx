@@ -18,8 +18,12 @@ export function PropertyCard({ property }: { property: Property }) {
 
   const details: string[] = []
   if (property.size_pyeong) details.push(`${property.size_pyeong}평`)
-  if (property.rooms) details.push(`방 ${property.rooms}개`)
   if (property.floor) details.push(`${property.floor}층`)
+  if (property.rooms) details.push(`방 ${property.rooms}개`)
+  if (property.direction) details.push(property.direction)
+
+  const isFullOption = property.tags.includes('풀옵션')
+  const otherTags = property.tags.filter((t) => t !== '풀옵션')
 
   return (
     <button
@@ -56,7 +60,10 @@ export function PropertyCard({ property }: { property: Property }) {
           {details.map((d) => (
             <span key={d} className="text-[12px] text-[#8b95a1] bg-[#2c2c35] px-2.5 py-1 rounded-md font-medium">{d}</span>
           ))}
-          {property.tags.slice(0, 3).map((tag) => (
+          {isFullOption && (
+            <span className="text-[12px] text-[#00b894] bg-[#00b8941a] px-2.5 py-1 rounded-md font-semibold">풀옵션</span>
+          )}
+          {otherTags.slice(0, 2).map((tag) => (
             <span key={tag} className="text-[12px] text-[#3182f6] bg-[#1a3a5c] px-2.5 py-1 rounded-md font-medium">{tag}</span>
           ))}
         </div>

@@ -9,7 +9,8 @@
       "WebFetch(domain:map.naver.com)",
       "WebFetch(domain:en.wikipedia.org)",
       "WebFetch(domain:developers.naver.com)",
-      "mcp__plugin_oh-my-claudecode_t__state_clear"
+      "mcp__plugin_oh-my-claudecode_t__state_clear",
+      "Bash(git push:*)"
     ]
   }
 }

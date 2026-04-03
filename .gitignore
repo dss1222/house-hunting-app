@@ -3,5 +3,6 @@ dist
 .env.local
 .env
 *.local
+scrape.cjs
 
 .vercel

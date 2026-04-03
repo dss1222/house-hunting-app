@@ -4,9 +4,35 @@ import { useAuth } from '../../hooks/useAuth'
 import { useProperties } from '../../hooks/useProperties'
 import { PRICE_TYPES, DIRECTIONS, EMPTY_PROPERTY_FORM } from '../../lib/constants'
 import { RatingStars } from './RatingStars'
-import { TagSelector } from './TagSelector'
 import type { PropertyFormData } from '../../types'
 import { supabase } from '../../lib/supabase'
+import { geocodeAddress } from '../../hooks/useKakaoMap'
+
+// 전용면적(㎡) → 평수 변환
+function sqmToPyeong(sqm: number): number {
+  return Math.round((sqm / 3.3058) * 10) / 10
+}
+
+// "공급/전용" 형태 파싱 → 전용면적 평수 반환
+function parseSizeInput(input: string): number | null {
+  const trimmed = input.trim()
+  if (!trimmed) return null
+  const parts = trimmed.split('/')
+  const targetStr = parts.length >= 2 ? parts[1]! : parts[0]!
+  const n = parseFloat(targetStr)
+  if (isNaN(n)) return null
+  // 숫자가 크면 ㎡으로 간주 (30 이상이면 ㎡)
+  return n >= 30 ? sqmToPyeong(n) : n
+}
+
+// "현재층/총층" 형태 파싱 → 현재층 반환
+function parseFloorInput(input: string): number | null {
+  const trimmed = input.trim()
+  if (!trimmed) return null
+  const parts = trimmed.split('/')
+  const n = parseInt(parts[0]!, 10)
+  return isNaN(n) ? null : n
+}
 
 export function PropertyForm() {
   const { id } = useParams()
@@ -15,10 +41,14 @@ export function PropertyForm() {
   const { createProperty, updateProperty } = useProperties()
   const [form, setForm] = useState(EMPTY_PROPERTY_FORM)
   const [saving, setSaving] = useState(false)
-  const [showDetail, setShowDetail] = useState(false)
-  const [showRating, setShowRating] = useState(false)
-  const [pasteText, setPasteText] = useState('')
-  const [showImport, setShowImport] = useState(true)
+  const [geocoding, setGeocoding] = useState(false)
+
+  // UI 전용 입력값 (저장 전 텍스트 형태)
+  const [sizeInput, setSizeInput] = useState('')
+  const [floorInput, setFloorInput] = useState('')
+  const [linkInput, setLinkInput] = useState('')
+  const [fullOption, setFullOption] = useState(false)
+
   const isEdit = !!id
 
   useEffect(() => {
@@ -46,6 +76,21 @@ export function PropertyForm() {
             longitude: data.longitude,
             tags: data.tags ?? [],
           })
+          if (data.size_pyeong) setSizeInput(String(data.size_pyeong))
+          if (data.floor) setFloorInput(String(data.floor))
+
+          const tags: string[] = data.tags ?? []
+          setFullOption(tags.includes('풀옵션'))
+
+          // 메모에서 링크 분리 (http로 시작하는 첫 줄)
+          const memo: string = data.memo ?? ''
+          const lines = memo.split('\n')
+          const linkLine = lines.find((l) => l.startsWith('http'))
+          if (linkLine) {
+            setLinkInput(linkLine)
+            const remaining = lines.filter((l) => l !== linkLine).join('\n').trim()
+            setForm((prev) => ({ ...prev, memo: remaining }))
+          }
         }
       })
     }
@@ -60,16 +105,44 @@ export function PropertyForm() {
     return v === '' || isNaN(n) ? null : n
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleGeocode = async () => {
+    if (!form.address.trim()) return
+    setGeocoding(true)
+    try {
+      const result = await geocodeAddress(form.address)
+      if (result) {
+        setForm((prev) => ({ ...prev, latitude: result.lat, longitude: result.lng }))
+      } else {
+        alert('주소를 찾을 수 없습니다. 더 자세한 주소를 입력해 주세요.')
+      }
+    } catch {
+      // geocoding 실패는 무시
+    } finally {
+      setGeocoding(false)
+    }
+  }
+
+  const handleSubmit = async (e?: React.FormEvent | React.MouseEvent) => {
+    e?.preventDefault()
     if (!user) return
     setSaving(true)
     try {
+      // 태그 처리
+      const tags = form.tags.filter((t) => t !== '풀옵션')
+      if (fullOption) tags.push('풀옵션')
+
+      // 메모 + 링크 합치기
+      const memoParts: string[] = []
+      if (linkInput.trim()) memoParts.push(linkInput.trim())
+      if (form.memo.trim()) memoParts.push(form.memo.trim())
+      const combinedMemo = memoParts.join('\n') || null
+
       const data: PropertyFormData = {
         ...form,
+        tags,
         direction: form.direction || null,
         move_in_date: form.move_in_date || null,
-        memo: form.memo || null,
+        memo: combinedMemo,
       }
       if (isEdit) {
         await updateProperty(id, data)
@@ -86,180 +159,262 @@ export function PropertyForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 space-y-4">
-      <div className="flex items-center justify-between mb-2">
-        <h2 className="text-lg font-bold">{isEdit ? '매물 수정' : '새 매물 등록'}</h2>
-        <button type="button" onClick={() => navigate(-1)} className="text-text-secondary min-h-[44px] px-2">
-          취소
+    <div className="min-h-screen bg-white">
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 h-[56px] border-b border-gray-100 sticky top-0 bg-white z-10">
+        <button type="button" onClick={() => navigate(-1)} className="min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-500">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M15 18l-6-6 6-6"/></svg>
         </button>
+        <h2 className="text-[17px] font-bold text-gray-900">{isEdit ? '매물 수정' : '새 매물 등록'}</h2>
+        <div className="min-w-[44px]" />
       </div>
 
-      {/* 네이버 링크 저장 */}
-      {!isEdit && showImport && (
-        <section className="bg-primary-light rounded-xl p-4 space-y-2">
-          <h3 className="text-sm font-semibold text-primary">네이버 부동산 링크 저장</h3>
-          <p className="text-xs text-text-secondary">공유 링크를 붙여넣으면 메모에 저장됩니다</p>
+      <form onSubmit={handleSubmit} className="px-4 py-5 space-y-5 pb-24">
+        {/* 매물명 */}
+        <div className="space-y-1.5">
+          <label className="text-[13px] font-semibold text-gray-500">매물명 *</label>
+          <input
+            required
+            placeholder="예: 논현 래미안 101동 1201호"
+            value={form.name}
+            onChange={(e) => set('name', e.target.value)}
+            className="w-full px-4 py-3 border border-gray-200 rounded-xl text-[15px] min-h-[48px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+          />
+        </div>
+
+        {/* 가격 유형 + 가격 */}
+        <div className="space-y-1.5">
+          <label className="text-[13px] font-semibold text-gray-500">가격</label>
+          <div className="flex gap-2 mb-2">
+            {PRICE_TYPES.map((t) => (
+              <button
+                key={t}
+                type="button"
+                onClick={() => set('price_type', t)}
+                className={`flex-1 py-2.5 rounded-xl text-[14px] font-semibold border transition-colors min-h-[44px] ${
+                  form.price_type === t
+                    ? 'bg-blue-500 text-white border-blue-500'
+                    : 'bg-white text-gray-600 border-gray-200'
+                }`}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+          {form.price_type === '매매' && (
+            <input
+              type="number"
+              placeholder="매매가 (만원)"
+              value={form.price ?? ''}
+              onChange={(e) => set('price', numOrNull(e.target.value))}
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl text-[15px] min-h-[48px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            />
+          )}
+          {form.price_type === '전세' && (
+            <input
+              type="number"
+              placeholder="전세금 (만원)"
+              value={form.deposit ?? ''}
+              onChange={(e) => set('deposit', numOrNull(e.target.value))}
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl text-[15px] min-h-[48px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            />
+          )}
+          {form.price_type === '월세' && (
+            <div className="flex gap-2">
+              <input
+                type="number"
+                placeholder="보증금 (만원)"
+                value={form.deposit ?? ''}
+                onChange={(e) => set('deposit', numOrNull(e.target.value))}
+                className="flex-1 px-4 py-3 border border-gray-200 rounded-xl text-[15px] min-h-[48px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              />
+              <input
+                type="number"
+                placeholder="월세 (만원)"
+                value={form.monthly_rent ?? ''}
+                onChange={(e) => set('monthly_rent', numOrNull(e.target.value))}
+                className="flex-1 px-4 py-3 border border-gray-200 rounded-xl text-[15px] min-h-[48px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              />
+            </div>
+          )}
+        </div>
+
+        {/* 전용면적 + 층수 */}
+        <div className="flex gap-3">
+          <div className="flex-1 space-y-1.5">
+            <label className="text-[13px] font-semibold text-gray-500">전용면적</label>
+            <input
+              placeholder="예: 84/59"
+              value={sizeInput}
+              onChange={(e) => {
+                setSizeInput(e.target.value)
+                const parsed = parseSizeInput(e.target.value)
+                set('size_pyeong', parsed)
+              }}
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl text-[15px] min-h-[48px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            />
+            {form.size_pyeong != null && (
+              <p className="text-[12px] text-blue-500 font-medium">{form.size_pyeong}평</p>
+            )}
+          </div>
+          <div className="flex-1 space-y-1.5">
+            <label className="text-[13px] font-semibold text-gray-500">층수</label>
+            <input
+              placeholder="예: 5/12"
+              value={floorInput}
+              onChange={(e) => {
+                setFloorInput(e.target.value)
+                set('floor', parseFloorInput(e.target.value))
+              }}
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl text-[15px] min-h-[48px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            />
+            {form.floor != null && (
+              <p className="text-[12px] text-blue-500 font-medium">{form.floor}층</p>
+            )}
+          </div>
+        </div>
+
+        {/* 방향 */}
+        <div className="space-y-1.5">
+          <label className="text-[13px] font-semibold text-gray-500">방향</label>
+          <div className="flex flex-wrap gap-2">
+            {DIRECTIONS.map((d) => (
+              <button
+                key={d}
+                type="button"
+                onClick={() => set('direction', form.direction === d ? '' : d)}
+                className={`px-4 py-2 rounded-xl text-[14px] font-medium border transition-colors min-h-[44px] ${
+                  form.direction === d
+                    ? 'bg-blue-500 text-white border-blue-500'
+                    : 'bg-white text-gray-600 border-gray-200'
+                }`}
+              >
+                {d}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 방수 + 욕실수 */}
+        <div className="flex gap-3">
+          <div className="flex-1 space-y-1.5">
+            <label className="text-[13px] font-semibold text-gray-500">방 수</label>
+            <input
+              type="number"
+              placeholder="2"
+              min="0"
+              value={form.rooms ?? ''}
+              onChange={(e) => set('rooms', numOrNull(e.target.value))}
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl text-[15px] min-h-[48px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            />
+          </div>
+          <div className="flex-1 space-y-1.5">
+            <label className="text-[13px] font-semibold text-gray-500">욕실 수</label>
+            <input
+              type="number"
+              placeholder="1"
+              min="0"
+              value={form.bathrooms ?? ''}
+              onChange={(e) => set('bathrooms', numOrNull(e.target.value))}
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl text-[15px] min-h-[48px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            />
+          </div>
+        </div>
+
+        {/* 풀옵션 + 주차 토글 */}
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={() => setFullOption(!fullOption)}
+            className={`flex-1 flex items-center justify-between px-4 py-3 rounded-xl border transition-colors min-h-[48px] ${
+              fullOption ? 'bg-blue-50 border-blue-400' : 'bg-white border-gray-200'
+            }`}
+          >
+            <span className={`text-[15px] font-medium ${fullOption ? 'text-blue-600' : 'text-gray-700'}`}>풀옵션</span>
+            <div className={`w-11 h-6 rounded-full transition-colors relative ${fullOption ? 'bg-blue-500' : 'bg-gray-300'}`}>
+              <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${fullOption ? 'translate-x-5' : 'translate-x-0.5'}`} />
+            </div>
+          </button>
+          <button
+            type="button"
+            onClick={() => set('parking', !form.parking)}
+            className={`flex-1 flex items-center justify-between px-4 py-3 rounded-xl border transition-colors min-h-[48px] ${
+              form.parking ? 'bg-blue-50 border-blue-400' : 'bg-white border-gray-200'
+            }`}
+          >
+            <span className={`text-[15px] font-medium ${form.parking ? 'text-blue-600' : 'text-gray-700'}`}>주차</span>
+            <div className={`w-11 h-6 rounded-full transition-colors relative ${form.parking ? 'bg-blue-500' : 'bg-gray-300'}`}>
+              <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${form.parking ? 'translate-x-5' : 'translate-x-0.5'}`} />
+            </div>
+          </button>
+        </div>
+
+        {/* 주소 */}
+        <div className="space-y-1.5">
+          <label className="text-[13px] font-semibold text-gray-500">주소</label>
           <div className="flex gap-2">
             <input
-              placeholder="네이버 부동산 링크 붙여넣기"
-              value={pasteText}
-              onChange={(e) => setPasteText(e.target.value)}
-              className="flex-1 px-3 py-2 border border-border rounded-lg text-sm min-h-[44px] bg-white"
+              placeholder="서울시 강남구 논현동..."
+              value={form.address}
+              onChange={(e) => set('address', e.target.value)}
+              onBlur={handleGeocode}
+              className="flex-1 px-4 py-3 border border-gray-200 rounded-xl text-[15px] min-h-[48px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             />
             <button
               type="button"
-              disabled={!pasteText.trim()}
-              onClick={() => {
-                set('memo', pasteText.trim())
-                setShowImport(false)
-              }}
-              className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium min-h-[44px] disabled:opacity-50 whitespace-nowrap"
+              onClick={handleGeocode}
+              disabled={geocoding || !form.address.trim()}
+              className="px-4 py-3 bg-gray-100 text-gray-700 rounded-xl text-[14px] font-medium min-h-[48px] disabled:opacity-40 whitespace-nowrap"
             >
-              저장
+              {geocoding ? '검색중...' : '검색'}
             </button>
           </div>
-        </section>
-      )}
+          {form.latitude && form.longitude && (
+            <p className="text-[12px] text-green-600 font-medium">위치 확인됨 ({form.latitude.toFixed(4)}, {form.longitude.toFixed(4)})</p>
+          )}
+        </div>
 
-      {/* 기본 정보 */}
-      <section className="space-y-3">
-        <h3 className="text-sm font-semibold text-text-secondary">기본 정보</h3>
-        <input
-          required
-          placeholder="매물 이름 *"
-          value={form.name}
-          onChange={(e) => set('name', e.target.value)}
-          className="w-full px-3 py-3 border border-border rounded-lg min-h-[44px]"
-        />
-        <input
-          required
-          placeholder="주소 *"
-          value={form.address}
-          onChange={(e) => set('address', e.target.value)}
-          className="w-full px-3 py-3 border border-border rounded-lg min-h-[44px]"
-        />
-        <select
-          value={form.price_type}
-          onChange={(e) => set('price_type', e.target.value as typeof form.price_type)}
-          className="w-full px-3 py-3 border border-border rounded-lg min-h-[44px] bg-white"
-        >
-          {PRICE_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
-        </select>
-
-        {form.price_type === '매매' && (
+        {/* 링크 */}
+        <div className="space-y-1.5">
+          <label className="text-[13px] font-semibold text-gray-500">링크 (네이버 부동산 등)</label>
           <input
-            type="number"
-            placeholder="매매가 (만원)"
-            value={form.price ?? ''}
-            onChange={(e) => set('price', numOrNull(e.target.value))}
-            className="w-full px-3 py-3 border border-border rounded-lg min-h-[44px]"
+            type="url"
+            placeholder="https://..."
+            value={linkInput}
+            onChange={(e) => setLinkInput(e.target.value)}
+            className="w-full px-4 py-3 border border-gray-200 rounded-xl text-[15px] min-h-[48px] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
           />
-        )}
-        {form.price_type === '전세' && (
-          <input
-            type="number"
-            placeholder="전세금 (만원)"
-            value={form.deposit ?? ''}
-            onChange={(e) => set('deposit', numOrNull(e.target.value))}
-            className="w-full px-3 py-3 border border-border rounded-lg min-h-[44px]"
+        </div>
+
+        {/* 메모 */}
+        <div className="space-y-1.5">
+          <label className="text-[13px] font-semibold text-gray-500">메모</label>
+          <textarea
+            placeholder="특이사항, 느낀점 등 자유롭게 작성하세요"
+            value={form.memo}
+            onChange={(e) => set('memo', e.target.value)}
+            rows={4}
+            className="w-full px-4 py-3 border border-gray-200 rounded-xl text-[15px] resize-none focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
           />
-        )}
-        {form.price_type === '월세' && (
-          <div className="flex gap-2">
-            <input
-              type="number"
-              placeholder="보증금 (만원)"
-              value={form.deposit ?? ''}
-              onChange={(e) => set('deposit', numOrNull(e.target.value))}
-              className="flex-1 px-3 py-3 border border-border rounded-lg min-h-[44px]"
-            />
-            <input
-              type="number"
-              placeholder="월세 (만원)"
-              value={form.monthly_rent ?? ''}
-              onChange={(e) => set('monthly_rent', numOrNull(e.target.value))}
-              className="flex-1 px-3 py-3 border border-border rounded-lg min-h-[44px]"
-            />
-          </div>
-        )}
-        <input
-          type="number"
-          placeholder="평수"
-          value={form.size_pyeong ?? ''}
-          onChange={(e) => set('size_pyeong', numOrNull(e.target.value))}
-          className="w-full px-3 py-3 border border-border rounded-lg min-h-[44px]"
-        />
-        <textarea
-          placeholder="메모"
-          value={form.memo}
-          onChange={(e) => set('memo', e.target.value)}
-          rows={3}
-          className="w-full px-3 py-3 border border-border rounded-lg resize-none"
-        />
-      </section>
+        </div>
 
-      {/* 상세 정보 */}
-      <section>
+        {/* 별점 */}
+        <div className="space-y-1.5">
+          <label className="text-[13px] font-semibold text-gray-500">별점</label>
+          <RatingStars value={form.rating} onChange={(v) => set('rating', v)} />
+        </div>
+      </form>
+
+      {/* 저장 버튼 - 하단 고정 */}
+      <div className="fixed bottom-0 left-0 right-0 px-4 pb-6 pt-3 bg-white border-t border-gray-100">
         <button
-          type="button"
-          onClick={() => setShowDetail(!showDetail)}
-          className="flex items-center justify-between w-full py-2 text-sm font-semibold text-text-secondary min-h-[44px]"
+          onClick={handleSubmit}
+          disabled={saving}
+          className="w-full py-4 bg-blue-500 text-white rounded-2xl text-[16px] font-bold min-h-[52px] disabled:opacity-50 active:scale-[0.98] transition-transform"
         >
-          <span>상세 정보</span>
-          <span>{showDetail ? '▲' : '▼'}</span>
+          {saving ? '저장 중...' : isEdit ? '수정 완료' : '등록하기'}
         </button>
-        {showDetail && (
-          <div className="space-y-3 mt-2">
-            <div className="grid grid-cols-2 gap-2">
-              <input type="number" placeholder="층수" value={form.floor ?? ''} onChange={(e) => set('floor', numOrNull(e.target.value))} className="px-3 py-3 border border-border rounded-lg min-h-[44px]" />
-              <input type="number" placeholder="방 수" value={form.rooms ?? ''} onChange={(e) => set('rooms', numOrNull(e.target.value))} className="px-3 py-3 border border-border rounded-lg min-h-[44px]" />
-              <input type="number" placeholder="화장실 수" value={form.bathrooms ?? ''} onChange={(e) => set('bathrooms', numOrNull(e.target.value))} className="px-3 py-3 border border-border rounded-lg min-h-[44px]" />
-              <input type="number" placeholder="관리비 (만원)" value={form.maintenance_fee ?? ''} onChange={(e) => set('maintenance_fee', numOrNull(e.target.value))} className="px-3 py-3 border border-border rounded-lg min-h-[44px]" />
-            </div>
-            <select value={form.direction} onChange={(e) => set('direction', e.target.value)} className="w-full px-3 py-3 border border-border rounded-lg min-h-[44px] bg-white">
-              <option value="">방향 선택</option>
-              {DIRECTIONS.map((d) => <option key={d} value={d}>{d}</option>)}
-            </select>
-            <input type="date" placeholder="입주 가능일" value={form.move_in_date} onChange={(e) => set('move_in_date', e.target.value)} className="w-full px-3 py-3 border border-border rounded-lg min-h-[44px]" />
-            <label className="flex items-center gap-2 min-h-[44px]">
-              <input type="checkbox" checked={form.parking} onChange={(e) => set('parking', e.target.checked)} className="w-5 h-5 rounded" />
-              <span>주차 가능</span>
-            </label>
-          </div>
-        )}
-      </section>
-
-      {/* 평가 */}
-      <section>
-        <button
-          type="button"
-          onClick={() => setShowRating(!showRating)}
-          className="flex items-center justify-between w-full py-2 text-sm font-semibold text-text-secondary min-h-[44px]"
-        >
-          <span>평가</span>
-          <span>{showRating ? '▲' : '▼'}</span>
-        </button>
-        {showRating && (
-          <div className="space-y-3 mt-2">
-            <div>
-              <label className="text-sm text-text-secondary mb-1 block">별점</label>
-              <RatingStars value={form.rating} onChange={(v) => set('rating', v)} />
-            </div>
-            <div>
-              <label className="text-sm text-text-secondary mb-1 block">태그</label>
-              <TagSelector selected={form.tags} onChange={(t) => set('tags', t)} />
-            </div>
-          </div>
-        )}
-      </section>
-
-      <button
-        type="submit"
-        disabled={saving}
-        className="w-full py-3 bg-primary text-white rounded-xl text-base font-semibold min-h-[44px] disabled:opacity-50"
-      >
-        {saving ? '저장 중...' : isEdit ? '수정 완료' : '등록하기'}
-      </button>
-    </form>
+      </div>
+    </div>
   )
 }

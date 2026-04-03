@@ -155,80 +155,80 @@
   "hotPaths": [
     {
       "path": "src\\components\\property\\PropertyDetail.tsx",
-      "accessCount": 15,
-      "lastAccessed": 1775227316746,
-      "type": "file"
-    },
-    {
-      "path": "src\\components\\layout\\MobileLayout.tsx",
-      "accessCount": 7,
-      "lastAccessed": 1775226217634,
-      "type": "file"
-    },
-    {
-      "path": "src\\components\\layout\\BottomTabBar.tsx",
-      "accessCount": 7,
-      "lastAccessed": 1775226228040,
+      "accessCount": 18,
+      "lastAccessed": 1775229140250,
       "type": "file"
     },
     {
       "path": "src\\components\\auth\\LoginPage.tsx",
-      "accessCount": 7,
-      "lastAccessed": 1775226249949,
+      "accessCount": 8,
+      "lastAccessed": 1775229061391,
       "type": "file"
     },
     {
-      "path": "src\\components\\list\\ListView.tsx",
-      "accessCount": 7,
-      "lastAccessed": 1775226259563,
+      "path": "src\\components\\layout\\MobileLayout.tsx",
+      "accessCount": 8,
+      "lastAccessed": 1775229068046,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\layout\\BottomTabBar.tsx",
+      "accessCount": 8,
+      "lastAccessed": 1775229077492,
       "type": "file"
     },
     {
       "path": "src\\components\\property\\PropertyCard.tsx",
-      "accessCount": 7,
-      "lastAccessed": 1775226270893,
+      "accessCount": 8,
+      "lastAccessed": 1775229095101,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\list\\ListView.tsx",
+      "accessCount": 8,
+      "lastAccessed": 1775229105052,
       "type": "file"
     },
     {
       "path": "src\\components\\compare\\CompareView.tsx",
-      "accessCount": 7,
-      "lastAccessed": 1775226319894,
+      "accessCount": 8,
+      "lastAccessed": 1775229160365,
       "type": "file"
     },
     {
       "path": "src\\components\\map\\MapView.tsx",
-      "accessCount": 7,
-      "lastAccessed": 1775226336890,
+      "accessCount": 8,
+      "lastAccessed": 1775229177711,
       "type": "file"
     },
     {
       "path": "src\\components\\property\\RatingStars.tsx",
-      "accessCount": 7,
-      "lastAccessed": 1775226347355,
+      "accessCount": 8,
+      "lastAccessed": 1775229188230,
       "type": "file"
     },
     {
       "path": "src\\components\\property\\TagSelector.tsx",
-      "accessCount": 7,
-      "lastAccessed": 1775226351236,
+      "accessCount": 8,
+      "lastAccessed": 1775229192217,
       "type": "file"
     },
     {
       "path": "src\\components\\property\\PhotoUploader.tsx",
-      "accessCount": 7,
-      "lastAccessed": 1775226361134,
+      "accessCount": 8,
+      "lastAccessed": 1775229202011,
       "type": "file"
     },
     {
       "path": "src\\components\\property\\ReviewSection.tsx",
-      "accessCount": 7,
-      "lastAccessed": 1775226373659,
+      "accessCount": 8,
+      "lastAccessed": 1775229214810,
       "type": "file"
     },
     {
       "path": "src\\styles\\globals.css",
-      "accessCount": 6,
-      "lastAccessed": 1775226201042,
+      "accessCount": 7,
+      "lastAccessed": 1775229029744,
       "type": "file"
     },
     {
@@ -239,14 +239,14 @@
     },
     {
       "path": "src\\App.tsx",
-      "accessCount": 4,
-      "lastAccessed": 1775226210881,
+      "accessCount": 5,
+      "lastAccessed": 1775229046171,
       "type": "file"
     },
     {
       "path": "src\\components\\layout\\ErrorBoundary.tsx",
-      "accessCount": 4,
-      "lastAccessed": 1775226378212,
+      "accessCount": 5,
+      "lastAccessed": 1775229218618,
       "type": "file"
     },
     {
@@ -259,6 +259,12 @@
       "path": "src\\main.tsx",
       "accessCount": 3,
       "lastAccessed": 1775226156902,
+      "type": "file"
+    },
+    {
+      "path": "index.html",
+      "accessCount": 3,
+      "lastAccessed": 1775229035883,
       "type": "file"
     },
     {
@@ -340,10 +346,10 @@
       "type": "file"
     },
     {
-      "path": "index.html",
+      "path": "src",
       "accessCount": 2,
-      "lastAccessed": 1775226180773,
-      "type": "file"
+      "lastAccessed": 1775229553487,
+      "type": "directory"
     },
     {
       "path": "tsconfig.json",
@@ -367,12 +373,6 @@
       "path": "",
       "accessCount": 1,
       "lastAccessed": 1775226885520,
-      "type": "directory"
-    },
-    {
-      "path": "src",
-      "accessCount": 1,
-      "lastAccessed": 1775226886710,
       "type": "directory"
     },
     {

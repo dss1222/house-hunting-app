@@ -77,7 +77,7 @@ export function PropertyDetail() {
   }
 
   const infoRows: { label: string; value: string }[] = []
-  if (property.size_pyeong) infoRows.push({ label: '평수', value: `${property.size_pyeong}평` })
+  if (property.size_pyeong) infoRows.push({ label: '전용면적', value: `${property.size_pyeong}평` })
   if (property.floor) infoRows.push({ label: '층수', value: `${property.floor}층` })
   if (property.rooms) infoRows.push({ label: '방 수', value: `${property.rooms}개` })
   if (property.bathrooms) infoRows.push({ label: '화장실', value: `${property.bathrooms}개` })
@@ -85,6 +85,11 @@ export function PropertyDetail() {
   if (property.maintenance_fee) infoRows.push({ label: '관리비', value: `월 ${property.maintenance_fee}만원` })
   if (property.direction) infoRows.push({ label: '방향', value: property.direction })
   if (property.move_in_date) infoRows.push({ label: '입주 가능일', value: property.move_in_date })
+
+  // 메모에서 링크 분리
+  const memoLines = (property.memo ?? '').split('\n')
+  const linkUrl = memoLines.find((l) => l.startsWith('http')) ?? null
+  const memoText = memoLines.filter((l) => l !== linkUrl).join('\n').trim()
 
   return (
     <div className="animate-fade-in bg-[#17171c]">
@@ -160,13 +165,31 @@ export function PropertyDetail() {
         </div>
       </div>
 
+      {/* Link */}
+      {linkUrl && (
+        <>
+          <div className="toss-section-divider" />
+          <div className="px-5 py-6">
+            <h3 className="text-[18px] font-bold text-white mb-3">링크</h3>
+            <a
+              href={linkUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[15px] text-[#3182f6] underline break-all leading-[1.65]"
+            >
+              {linkUrl}
+            </a>
+          </div>
+        </>
+      )}
+
       {/* Memo */}
-      {property.memo && (
+      {memoText && (
         <>
           <div className="toss-section-divider" />
           <div className="px-5 py-6">
             <h3 className="text-[18px] font-bold text-white mb-3">메모</h3>
-            <p className="text-[15px] text-[#8b95a1] leading-[1.65] whitespace-pre-wrap">{property.memo}</p>
+            <p className="text-[15px] text-[#8b95a1] leading-[1.65] whitespace-pre-wrap">{memoText}</p>
           </div>
         </>
       )}
