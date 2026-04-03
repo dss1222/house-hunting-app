@@ -152,6 +152,199 @@
       ]
     }
   },
-  "hotPaths": [],
+  "hotPaths": [
+    {
+      "path": "src\\styles\\globals.css",
+      "accessCount": 2,
+      "lastAccessed": 1775224889100,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\layout\\MobileLayout.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1775224889410,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\layout\\BottomTabBar.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1775224890007,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\auth\\LoginPage.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1775224890157,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\list\\ListView.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1775224894599,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\property\\PropertyCard.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1775224895097,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\property\\PropertyDetail.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1775224895562,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\compare\\CompareView.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1775224896009,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\map\\MapView.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1775224896444,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\property\\PhotoUploader.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1775224896891,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\property\\ReviewSection.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1775224897351,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\property\\RatingStars.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1775224897796,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\property\\TagSelector.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1775224898199,
+      "type": "file"
+    },
+    {
+      "path": "package.json",
+      "accessCount": 1,
+      "lastAccessed": 1775224818575,
+      "type": "file"
+    },
+    {
+      "path": "vite.config.ts",
+      "accessCount": 1,
+      "lastAccessed": 1775224823187,
+      "type": "file"
+    },
+    {
+      "path": "src\\types\\index.ts",
+      "accessCount": 1,
+      "lastAccessed": 1775224823650,
+      "type": "file"
+    },
+    {
+      "path": "tsconfig.json",
+      "accessCount": 1,
+      "lastAccessed": 1775224823889,
+      "type": "file"
+    },
+    {
+      "path": "src\\main.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1775224827053,
+      "type": "file"
+    },
+    {
+      "path": "src\\App.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1775224827299,
+      "type": "file"
+    },
+    {
+      "path": "src\\lib\\constants.ts",
+      "accessCount": 1,
+      "lastAccessed": 1775224827524,
+      "type": "file"
+    },
+    {
+      "path": "src\\lib\\supabase.ts",
+      "accessCount": 1,
+      "lastAccessed": 1775224827734,
+      "type": "file"
+    },
+    {
+      "path": "src\\hooks\\useAuth.ts",
+      "accessCount": 1,
+      "lastAccessed": 1775224828316,
+      "type": "file"
+    },
+    {
+      "path": "src\\contexts\\AuthContext.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1775224828334,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\layout\\ErrorBoundary.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1775224831305,
+      "type": "file"
+    },
+    {
+      "path": "src\\components\\property\\PropertyForm.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1775224834565,
+      "type": "file"
+    },
+    {
+      "path": "src\\hooks\\useProperties.ts",
+      "accessCount": 1,
+      "lastAccessed": 1775224838760,
+      "type": "file"
+    },
+    {
+      "path": "src\\hooks\\usePhotos.ts",
+      "accessCount": 1,
+      "lastAccessed": 1775224838981,
+      "type": "file"
+    },
+    {
+      "path": "src\\hooks\\useReviews.ts",
+      "accessCount": 1,
+      "lastAccessed": 1775224839210,
+      "type": "file"
+    },
+    {
+      "path": "src\\hooks\\useKakaoMap.ts",
+      "accessCount": 1,
+      "lastAccessed": 1775224839351,
+      "type": "file"
+    },
+    {
+      "path": "src\\hooks\\useNaverImport.ts",
+      "accessCount": 1,
+      "lastAccessed": 1775224843517,
+      "type": "file"
+    },
+    {
+      "path": "api\\naver-land.ts",
+      "accessCount": 1,
+      "lastAccessed": 1775224843605,
+      "type": "file"
+    },
+    {
+      "path": "src\\types\\kakao.d.ts",
+      "accessCount": 1,
+      "lastAccessed": 1775224844551,
+      "type": "file"
+    }
+  ],
   "userDirectives": []
 }

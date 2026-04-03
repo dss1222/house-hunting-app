@@ -18,7 +18,7 @@ export function useNaverImport() {
       } else if (inputUrl.includes('naver.me')) {
         // CORS 프록시로 리다이렉트 URL 확인
         const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(inputUrl)}`
-        const res = await fetchWithTimeout(proxyUrl, 10000)
+        const res = await fetchWithTimeout(proxyUrl, 30000)
         const html = await res.text()
         const idMatch = html.match(/articles\/(\d+)/)
         if (idMatch) articleId = idMatch[1]!
@@ -33,7 +33,7 @@ export function useNaverImport() {
       const apiUrl = `https://fin.land.naver.com/front-api/v1/article/basicInfo?articleId=${articleId}`
       const proxyApiUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`
 
-      const apiRes = await fetchWithTimeout(proxyApiUrl, 10000)
+      const apiRes = await fetchWithTimeout(proxyApiUrl, 30000)
       const data = await apiRes.json()
 
       const info = data?.result ?? data
@@ -42,7 +42,7 @@ export function useNaverImport() {
         // API 실패시 HTML 페이지에서 파싱 시도
         const htmlUrl = `https://fin.land.naver.com/articles/${articleId}`
         const proxyHtmlUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(htmlUrl)}`
-        const htmlRes = await fetchWithTimeout(proxyHtmlUrl, 10000)
+        const htmlRes = await fetchWithTimeout(proxyHtmlUrl, 30000)
         const htmlData = await htmlRes.json()
 
         if (htmlData?.contents) {
