@@ -1,79 +1,66 @@
+import type { VercelRequest, VercelResponse } from '@vercel/node'
+
 export const config = { maxDuration: 15 }
 
-export default async function handler(req: Request): Promise<Response> {
-  const url = new URL(req.url)
-  const inputUrl = url.searchParams.get('url')
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+
+  if (req.method === 'OPTIONS') {
+    return res.status(204).end()
+  }
+
+  const inputUrl = req.query['url'] as string | undefined
 
   if (!inputUrl) {
-    return Response.json({ error: 'url 파라미터가 필요합니다' }, { status: 400 })
-  }
-
-  const headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET',
-    'Content-Type': 'application/json',
-  }
-
-  // CORS preflight
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { status: 204, headers })
+    return res.status(400).json({ error: 'url 파라미터가 필요합니다' })
   }
 
   try {
     // 1. article ID 추출
     let articleId = ''
 
-    // 직접 articles/ URL
     const directMatch = inputUrl.match(/articles\/(\d+)/)
     if (directMatch) {
       articleId = directMatch[1]!
     }
 
-    // naver.me 단축 URL → 리다이렉트 따라가기
+    // naver.me 단축 URL → 리다이렉트 따라가서 article ID 추출
     if (!articleId && inputUrl.includes('naver.me')) {
-      const controller = new AbortController()
-      const timer = setTimeout(() => controller.abort(), 8000)
       try {
-        const res = await fetch(inputUrl, {
+        const redirectRes = await fetch(inputUrl, {
           redirect: 'follow',
-          signal: controller.signal,
           headers: { 'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)' },
+          signal: AbortSignal.timeout(8000),
         })
-        clearTimeout(timer)
-        const finalUrl = res.url
-        const m = finalUrl.match(/articles\/(\d+)/)
+        const m = redirectRes.url.match(/articles\/(\d+)/)
         if (m) articleId = m[1]!
-      } catch {
-        clearTimeout(timer)
+      } catch (e) {
+        console.error('Redirect error:', e)
       }
     }
 
     if (!articleId) {
-      return Response.json({ error: '매물 링크에서 ID를 찾을 수 없습니다. 네이버 부동산 매물 상세 페이지의 공유 링크를 사용해주세요.' }, { status: 400, headers })
+      return res.status(400).json({ error: '매물 ID를 찾을 수 없습니다. 네이버 부동산 매물 상세 페이지의 공유 링크를 사용해주세요.' })
     }
 
     // 2. 네이버 부동산 API 호출
     const apiUrl = `https://fin.land.naver.com/front-api/v1/article/basicInfo?articleId=${articleId}`
-    const controller2 = new AbortController()
-    const timer2 = setTimeout(() => controller2.abort(), 8000)
-
     const apiRes = await fetch(apiUrl, {
-      signal: controller2.signal,
       headers: {
         'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15',
         'Referer': `https://fin.land.naver.com/articles/${articleId}`,
         'Accept': 'application/json',
       },
+      signal: AbortSignal.timeout(8000),
     })
-    clearTimeout(timer2)
 
     if (!apiRes.ok) {
-      return Response.json({ error: `네이버 API 오류 (${apiRes.status}). 잠시 후 다시 시도해주세요.` }, { status: 502, headers })
+      return res.status(502).json({ error: `네이버 API 오류 (${apiRes.status}). 잠시 후 다시 시도해주세요.` })
     }
 
     const data = await apiRes.json()
     if (data?.detailCode === 'TOO_MANY_REQUESTS') {
-      return Response.json({ error: '네이버 요청 제한. 30초 후 다시 시도해주세요.' }, { status: 429, headers })
+      return res.status(429).json({ error: '네이버 요청 제한. 30초 후 다시 시도해주세요.' })
     }
 
     const info = data?.result ?? data
@@ -98,10 +85,11 @@ export default async function handler(req: Request): Promise<Response> {
       memo: `네이버 부동산: https://fin.land.naver.com/articles/${articleId}`,
     }
 
-    return Response.json({ property }, { status: 200, headers })
+    return res.status(200).json({ property })
   } catch (err) {
+    console.error('Handler error:', err)
     const msg = err instanceof Error ? err.message : 'Unknown error'
-    return Response.json({ error: `서버 오류: ${msg}` }, { status: 500, headers })
+    return res.status(500).json({ error: `서버 오류: ${msg}` })
   }
 }
 
